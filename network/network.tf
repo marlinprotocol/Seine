@@ -11,6 +11,11 @@ resource "aws_subnet" "default" {
   map_public_ip_on_launch = true
 }
 
+# Route table
+resource "aws_route_table" "default" {
+  vpc_id = "${aws_vpc.default.id}"
+}
+
 # Internet gateway
 resource "aws_internet_gateway" "default" {
   vpc_id = "${aws_vpc.default.id}"
