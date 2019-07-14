@@ -10,3 +10,8 @@ resource "aws_subnet" "default" {
   cidr_block              = "${aws_vpc.default.cidr_block}"
   map_public_ip_on_launch = true
 }
+
+# Internet gateway
+resource "aws_internet_gateway" "default" {
+  vpc_id = "${aws_vpc.default.id}"
+}
