@@ -94,3 +94,12 @@ resource "aws_route" "internet" {
   gateway_id             = "${aws_internet_gateway.default2.id}"
   provider               = "aws.ap-southeast-1"
 }
+
+
+# Peering
+resource "aws_vpc_peering_connection" "default" {
+  provider    = "aws.ap-south-1"
+  vpc_id      = "${aws_vpc.default.id}"
+  peer_vpc_id = "${aws_vpc.default2.id}"
+  peer_region = "ap-southeast-1"
+}
