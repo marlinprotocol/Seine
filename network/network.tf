@@ -103,3 +103,9 @@ resource "aws_vpc_peering_connection" "default" {
   peer_vpc_id = "${aws_vpc.default2.id}"
   peer_region = "ap-southeast-1"
 }
+
+resource "aws_vpc_peering_connection_accepter" "default" {
+  provider                  = "aws.ap-southeast-1"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
+  auto_accept               = true
+}
