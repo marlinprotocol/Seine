@@ -109,3 +109,18 @@ resource "aws_vpc_peering_connection_accepter" "default" {
   vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
   auto_accept               = true
 }
+
+# Peering routes
+resource "aws_route" "mumbai_to_singapore" {
+  provider                  = "aws.ap-south-1"
+  route_table_id            = "${aws_route_table.default.id}"
+  destination_cidr_block    = "10.1.0.0/16"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
+}
+
+resource "aws_route" "singapore_to_mumbai" {
+  provider                  = "aws.ap-southeast-1"
+  route_table_id            = "${aws_route_table.default2.id}"
+  destination_cidr_block    = "10.0.0.0/16"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.default2.id}"
+}
