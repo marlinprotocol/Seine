@@ -45,3 +45,11 @@ resource "aws_route" "internet" {
   gateway_id             = "${aws_internet_gateway.default.id}"
   provider               = "aws.ap-south-1"
 }
+
+output "vpc_id" {
+  value = "${aws_vpc.default.id}"
+}
+
+output "route_table_id" {
+  value = "${aws_route_table.default.id}"
+}
