@@ -1,3 +1,15 @@
+# Provider
+provider "aws" {
+  alias  = "ap-south-1"
+  region = "ap-south-1"
+}
+
+# Provider
+provider "aws" {
+  alias  = "ap-southeast-1"
+  region = "ap-southeast-1"
+}
+
 # Mumbai network
 module "mumbai_network" {
   source = "./modules/mumbai_network"
