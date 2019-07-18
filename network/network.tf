@@ -12,7 +12,7 @@ module "singapore_network" {
 resource "aws_vpc_peering_connection" "default" {
   provider    = "aws.ap-south-1"
   vpc_id      = "${module.mumbai_network.vpc_id}"
-  peer_vpc_id = "${aws_vpc.default2.id}"
+  peer_vpc_id = "${module.singapore_network.vpc_id}"
   peer_region = "ap-southeast-1"
 }
 
@@ -32,7 +32,7 @@ resource "aws_route" "mumbai_to_singapore" {
 
 resource "aws_route" "singapore_to_mumbai" {
   provider                  = "aws.ap-southeast-1"
-  route_table_id            = "${aws_route_table.default2.id}"
+  route_table_id            = "${module.singapore_network.route_table_id}"
   destination_cidr_block    = "10.0.0.0/16"
   vpc_peering_connection_id = "${aws_vpc_peering_connection.default2.id}"
 }
