@@ -9,6 +9,10 @@ resource "aws_vpc" "default2" {
   cidr_block           = "10.1.0.0/16"
   enable_dns_hostnames = true
   provider             = "aws.ap-southeast-1"
+
+  tags = {
+    project = "marlin-terraform"
+  }
 }
 
 # Subnet
@@ -17,12 +21,20 @@ resource "aws_subnet" "default2" {
   cidr_block              = "${aws_vpc.default2.cidr_block}"
   map_public_ip_on_launch = true
   provider                = "aws.ap-southeast-1"
+
+  tags = {
+    project = "marlin-terraform"
+  }
 }
 
 # Route table
 resource "aws_route_table" "default2" {
   vpc_id   = "${aws_vpc.default2.id}"
   provider = "aws.ap-southeast-1"
+
+  tags = {
+    project = "marlin-terraform"
+  }
 }
 
 # Route table association
@@ -36,6 +48,10 @@ resource "aws_route_table_association" "default2" {
 resource "aws_internet_gateway" "default2" {
   vpc_id   = "${aws_vpc.default2.id}"
   provider = "aws.ap-southeast-1"
+
+  tags = {
+    project = "marlin-terraform"
+  }
 }
 
 # Internet route
