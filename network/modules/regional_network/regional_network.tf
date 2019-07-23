@@ -1,9 +1,3 @@
-# Provider
-provider "aws" {
-  alias  = "ap-south-1"
-  region = "ap-south-1"
-}
-
 # Inputs
 variable "vpc_cidr" {
   type        = "string"
@@ -14,7 +8,6 @@ variable "vpc_cidr" {
 resource "aws_vpc" "default" {
   cidr_block           = "${var.vpc_cidr}"
   enable_dns_hostnames = true
-  provider             = "aws.ap-south-1"
 
   tags = {
     project = "marlin-terraform"
@@ -26,7 +19,6 @@ resource "aws_subnet" "default" {
   vpc_id                  = "${aws_vpc.default.id}"
   cidr_block              = "${aws_vpc.default.cidr_block}"
   map_public_ip_on_launch = true
-  provider                = "aws.ap-south-1"
 
   tags = {
     project = "marlin-terraform"
@@ -35,8 +27,7 @@ resource "aws_subnet" "default" {
 
 # Route table
 resource "aws_route_table" "default" {
-  vpc_id   = "${aws_vpc.default.id}"
-  provider = "aws.ap-south-1"
+  vpc_id = "${aws_vpc.default.id}"
 
   tags = {
     project = "marlin-terraform"
@@ -47,13 +38,11 @@ resource "aws_route_table" "default" {
 resource "aws_route_table_association" "default" {
   subnet_id      = "${aws_subnet.default.id}"
   route_table_id = "${aws_route_table.default.id}"
-  provider       = "aws.ap-south-1"
 }
 
 # Internet gateway
 resource "aws_internet_gateway" "default" {
-  vpc_id   = "${aws_vpc.default.id}"
-  provider = "aws.ap-south-1"
+  vpc_id = "${aws_vpc.default.id}"
 
   tags = {
     project = "marlin-terraform"
@@ -65,7 +54,6 @@ resource "aws_route" "internet" {
   route_table_id         = "${aws_route_table.default.id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = "${aws_internet_gateway.default.id}"
-  provider               = "aws.ap-south-1"
 }
 
 output "vpc_id" {
