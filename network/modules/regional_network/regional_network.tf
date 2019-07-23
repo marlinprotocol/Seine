@@ -4,9 +4,15 @@ provider "aws" {
   region = "ap-south-1"
 }
 
+# Inputs
+variable "vpc_cidr" {
+  type        = "string"
+  description = "CIDR block to be assigned to VPC"
+}
+
 # VPC
 resource "aws_vpc" "default" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = "${var.vpc_cidr}"
   enable_dns_hostnames = true
   provider             = "aws.ap-south-1"
 
