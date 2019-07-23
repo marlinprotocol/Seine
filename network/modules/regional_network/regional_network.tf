@@ -9,6 +9,19 @@ variable "vpc_cidr" {
   description = "CIDR block to be assigned to VPC"
 }
 
+# Outputs
+output "vpc" {
+  value = aws_vpc.default
+}
+
+output "subnet" {
+  value = aws_subnet.default
+}
+
+output "route_table" {
+  value = aws_route_table.default
+}
+
 # VPC
 resource "aws_vpc" "default" {
   cidr_block           = "${var.vpc_cidr}"
@@ -59,12 +72,4 @@ resource "aws_route" "internet" {
   route_table_id         = "${aws_route_table.default.id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = "${aws_internet_gateway.default.id}"
-}
-
-output "vpc_id" {
-  value = "${aws_vpc.default.id}"
-}
-
-output "route_table_id" {
-  value = "${aws_route_table.default.id}"
 }
