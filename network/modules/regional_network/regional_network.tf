@@ -1,4 +1,9 @@
 # Inputs
+variable "project" {
+  type        = "string"
+  description = "Project name"
+}
+
 variable "vpc_cidr" {
   type        = "string"
   description = "CIDR block to be assigned to VPC"
@@ -10,7 +15,7 @@ resource "aws_vpc" "default" {
   enable_dns_hostnames = true
 
   tags = {
-    project = "marlin-terraform"
+    project = "${var.project}"
   }
 }
 
@@ -21,7 +26,7 @@ resource "aws_subnet" "default" {
   map_public_ip_on_launch = true
 
   tags = {
-    project = "marlin-terraform"
+    project = "${var.project}"
   }
 }
 
@@ -30,7 +35,7 @@ resource "aws_route_table" "default" {
   vpc_id = "${aws_vpc.default.id}"
 
   tags = {
-    project = "marlin-terraform"
+    project = "${var.project}"
   }
 }
 
@@ -45,7 +50,7 @@ resource "aws_internet_gateway" "default" {
   vpc_id = "${aws_vpc.default.id}"
 
   tags = {
-    project = "marlin-terraform"
+    project = "${var.project}"
   }
 }
 
