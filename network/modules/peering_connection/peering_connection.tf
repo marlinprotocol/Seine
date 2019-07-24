@@ -44,11 +44,15 @@ variable "dst_cidr" {
 }
 
 # Peering
+data "aws_region" "dst" {
+  provider = "aws.dst"
+}
+
 resource "aws_vpc_peering_connection" "default" {
   provider    = "aws.src"
   vpc_id      = var.src_vpc_id
   peer_vpc_id = var.dst_vpc_id
-  peer_region = "ap-southeast-1"
+  peer_region = data.aws_region.dst.name
 
   tags = {
     project = "${var.project}"
