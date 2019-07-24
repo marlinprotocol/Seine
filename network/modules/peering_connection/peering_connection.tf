@@ -60,7 +60,7 @@ resource "aws_vpc_peering_connection" "default" {
 }
 
 resource "aws_vpc_peering_connection_accepter" "default" {
-  provider                  = "aws.src"
+  provider                  = "aws.dst"
   vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
   auto_accept               = true
 
@@ -78,7 +78,7 @@ resource "aws_route" "mumbai_to_singapore" {
 }
 
 resource "aws_route" "singapore_to_mumbai" {
-  provider                  = "aws.src"
+  provider                  = "aws.dst"
   route_table_id            = var.dst_route_table_id
   destination_cidr_block    = var.src_cidr
   vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
