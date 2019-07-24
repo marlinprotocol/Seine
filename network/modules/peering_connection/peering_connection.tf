@@ -1,3 +1,12 @@
+# Providers
+provider "aws" {
+  alias = "src"
+}
+
+provider "aws" {
+  alias = "dst"
+}
+
 # Inputs
 variable "project" {
   type        = "string"
@@ -36,7 +45,7 @@ variable "dst_cidr" {
 
 # Peering
 resource "aws_vpc_peering_connection" "default" {
-  provider    = "aws.ap-south-1"
+  provider    = "aws.src"
   vpc_id      = var.src_vpc_id
   peer_vpc_id = var.dst_vpc_id
   peer_region = "ap-southeast-1"
@@ -47,7 +56,7 @@ resource "aws_vpc_peering_connection" "default" {
 }
 
 resource "aws_vpc_peering_connection_accepter" "default" {
-  provider                  = "aws.ap-southeast-1"
+  provider                  = "aws.src"
   vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
   auto_accept               = true
 
@@ -58,14 +67,14 @@ resource "aws_vpc_peering_connection_accepter" "default" {
 
 # Peering routes
 resource "aws_route" "mumbai_to_singapore" {
-  provider                  = "aws.ap-south-1"
+  provider                  = "aws.src"
   route_table_id            = var.src_route_table_id
   destination_cidr_block    = var.dst_cidr
   vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
 }
 
 resource "aws_route" "singapore_to_mumbai" {
-  provider                  = "aws.ap-southeast-1"
+  provider                  = "aws.src"
   route_table_id            = var.dst_route_table_id
   destination_cidr_block    = var.src_cidr
   vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
