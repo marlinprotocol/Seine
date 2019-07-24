@@ -61,7 +61,7 @@ resource "aws_vpc_peering_connection" "default" {
 
 resource "aws_vpc_peering_connection_accepter" "default" {
   provider                  = "aws.dst"
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
+  vpc_peering_connection_id = aws_vpc_peering_connection.default.id
   auto_accept               = true
 
   tags = {
@@ -70,16 +70,16 @@ resource "aws_vpc_peering_connection_accepter" "default" {
 }
 
 # Peering routes
-resource "aws_route" "mumbai_to_singapore" {
+resource "aws_route" "src_to_dst" {
   provider                  = "aws.src"
   route_table_id            = var.src_route_table_id
   destination_cidr_block    = var.dst_cidr
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
+  vpc_peering_connection_id = aws_vpc_peering_connection.default.id
 }
 
-resource "aws_route" "singapore_to_mumbai" {
+resource "aws_route" "dst_to_src" {
   provider                  = "aws.dst"
   route_table_id            = var.dst_route_table_id
   destination_cidr_block    = var.src_cidr
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
+  vpc_peering_connection_id = aws_vpc_peering_connection.default.id
 }
