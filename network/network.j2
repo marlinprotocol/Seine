@@ -1,3 +1,9 @@
+# Inputs
+variable "project" {
+  type        = "string"
+  description = "Project name"
+}
+
 # Provider
 provider "aws" {
   alias  = "ap-south-1"
@@ -13,7 +19,7 @@ provider "aws" {
 # Mumbai network
 module "mumbai_network" {
   source    = "./modules/regional_network"
-  project   = "marlin-terraform"
+  project   = "${var.project}"
   vpc_block = "10.0.0.0/16"
 
   providers = {
@@ -24,7 +30,7 @@ module "mumbai_network" {
 # Singapore network
 module "singapore_network" {
   source    = "./modules/regional_network"
-  project   = "marlin-terraform"
+  project   = "${var.project}"
   vpc_block = "10.1.0.0/16"
 
   providers = {
