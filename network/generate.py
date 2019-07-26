@@ -4,7 +4,12 @@ import os
 env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(__file__))))
 
 template = env.get_template('network.j2')
-output_from_parsed_template = template.render()
+output_from_parsed_template = template.render(
+	regions=[
+		"ap-south-1",
+		"ap-southeast-1",
+	]
+)
 # print(output_from_parsed_template)
 
 # to save the results
