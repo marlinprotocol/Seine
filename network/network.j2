@@ -4,17 +4,14 @@ variable "project" {
   description = "Project name"
 }
 
+{% for region in regions -%}
 # Provider
 provider "aws" {
-  alias  = "ap-south-1"
-  region = "ap-south-1"
+  alias  = "{{region}}"
+  region = "{{region}}"
 }
 
-# Provider
-provider "aws" {
-  alias  = "ap-southeast-1"
-  region = "ap-southeast-1"
-}
+{% endfor -%}
 
 # Mumbai network
 module "mumbai_network" {
