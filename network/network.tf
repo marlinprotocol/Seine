@@ -10,14 +10,8 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-# Provider
-provider "aws" {
-  alias  = "ap-southeast-1"
-  region = "ap-southeast-1"
-}
-
-# Mumbai network
-module "mumbai_network" {
+# ap-south-1 network
+module "ap-south-1-network" {
   source    = "./modules/regional_network"
   project   = "${var.project}"
   vpc_block = "10.0.0.0/16"
@@ -27,8 +21,14 @@ module "mumbai_network" {
   }
 }
 
-# Singapore network
-module "singapore_network" {
+# Provider
+provider "aws" {
+  alias  = "ap-southeast-1"
+  region = "ap-southeast-1"
+}
+
+# ap-southeast-1 network
+module "ap-southeast-1-network" {
   source    = "./modules/regional_network"
   project   = "${var.project}"
   vpc_block = "10.1.0.0/16"
@@ -42,10 +42,10 @@ module "singapore_network" {
 module "mumbai-singapore" {
   source             = "./modules/peering_connection"
   project            = "${var.project}"
-  src_vpc_id         = module.mumbai_network.vpc.id
-  dst_vpc_id         = module.singapore_network.vpc.id
-  src_route_table_id = module.mumbai_network.route_table.id
-  dst_route_table_id = module.singapore_network.route_table.id
+  src_vpc_id         = module.ap-south-1-network.vpc.id
+  dst_vpc_id         = module.ap-southeast-1-network.vpc.id
+  src_route_table_id = module.ap-south-1-network.route_table.id
+  dst_route_table_id = module.ap-southeast-1-network.route_table.id
   src_cidr           = "10.0.0.0/16"
   dst_cidr           = "10.1.0.0/16"
 
