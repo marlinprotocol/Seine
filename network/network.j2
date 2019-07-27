@@ -5,6 +5,8 @@ variable "project" {
 }
 
 {% for region in regions -%}
+################ {{region}} begin ################
+
 # Provider
 provider "aws" {
   alias  = "{{region}}"
@@ -22,9 +24,9 @@ module "{{region}}" {
   }
 }
 
-# Peering
 {% set outer_idx = loop.index -%}
 {% for peer in regions[loop.index:] -%}
+# Peering with {{peer}}
 module "{{region}}-{{peer}}" {
   source = "./modules/peering_connection"
   project = "${var.project}"
@@ -42,4 +44,7 @@ module "{{region}}-{{peer}}" {
 }
 
 {% endfor -%}
+################ {{region}} end ################
+
+
 {% endfor -%}
