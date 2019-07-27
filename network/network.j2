@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 # {{region}} network
-module "{{region}}-network" {
+module "{{region}}" {
   source    = "./modules/regional_network"
   project   = "${var.project}"
   vpc_block = "10.{{loop.index-1}}.0.0/16"
@@ -22,21 +22,24 @@ module "{{region}}-network" {
   }
 }
 
-{% endfor -%}
-
 # Peering
-module "mumbai-singapore" {
-  source             = "./modules/peering_connection"
-  project            = "${var.project}"
-  src_vpc_id         = module.ap-south-1-network.vpc.id
-  dst_vpc_id         = module.ap-southeast-1-network.vpc.id
-  src_route_table_id = module.ap-south-1-network.route_table.id
-  dst_route_table_id = module.ap-southeast-1-network.route_table.id
-  src_cidr           = "10.0.0.0/16"
-  dst_cidr           = "10.1.0.0/16"
+{% set outer_idx = loop.index -%}
+{% for peer in regions[loop.index:] -%}
+module "{{region}}-{{peer}}" {
+  source = "./modules/peering_connection"
+  project = "${var.project}"
+  src_vpc_id = module.{{region}}.vpc.id
+  dst_vpc_id = module.{{peer}}.vpc.id
+  src_route_table_id = module.{{region}}.route_table.id
+  dst_route_table_id = module.{{peer}}.route_table.id
+  src_cidr = "10.{{outer_idx-1}}.0.0/16"
+  dst_cidr = "10.{{outer_idx+loop.index-1}}.0.0/16"
 
   providers = {
-    aws.src = "aws.ap-south-1"
-    aws.dst = "aws.ap-southeast-1"
+    aws.src = "aws.{{region}}"
+    aws.dst = "aws.{{peer}}"
   }
 }
+
+{% endfor -%}
+{% endfor -%}
