@@ -7,6 +7,11 @@ variable "project" {
 {% for region in regions -%}
 ################ {{region}} begin ################
 
+# Outputs
+output "{{region}}" {
+  value = module.{{region}}
+}
+
 # Provider
 provider "aws" {
   alias  = "{{region}}"
