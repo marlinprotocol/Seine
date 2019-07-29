@@ -6,6 +6,11 @@ variable "project" {
 
 ################ ap-south-1 begin ################
 
+# Outputs
+output "ap-south-1" {
+  value = module.ap-south-1
+}
+
 # Provider
 provider "aws" {
   alias  = "ap-south-1"
@@ -44,6 +49,11 @@ module "ap-south-1-ap-southeast-1" {
 
 
 ################ ap-southeast-1 begin ################
+
+# Outputs
+output "ap-southeast-1" {
+  value = module.ap-southeast-1
+}
 
 # Provider
 provider "aws" {
