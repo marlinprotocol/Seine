@@ -42,6 +42,12 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# IAM profile
+resource "aws_iam_instance_profile" "beacon" {
+  name = "${var.project}_beacon"
+  role = ""
+}
+
 # Instance
 resource "aws_instance" "beacon" {
   ami                    = "${data.aws_ami.ubuntu.id}"
@@ -49,7 +55,7 @@ resource "aws_instance" "beacon" {
   key_name               = "${var.key_name}"
   vpc_security_group_ids = var.security_group_ids
   subnet_id              = "${var.subnet_id}"
-  iam_instance_profile   = ""
+  iam_instance_profile   = "${aws_iam_instance_profile.beacon.name}"
 
   tags = {
     project = "${var.project}"
