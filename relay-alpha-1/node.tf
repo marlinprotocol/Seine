@@ -76,7 +76,7 @@ resource "aws_iam_instance_profile" "relay" {
 # Instance
 resource "aws_instance" "relay" {
   ami = "${data.aws_ami.ubuntu.id}"
-  instance_type = "t3.micro"
+  instance_type = "c5.large"
   key_name = "${var.key_name}"
   vpc_security_group_ids = var.security_group_ids
   subnet_id = "${var.subnet_id}"
