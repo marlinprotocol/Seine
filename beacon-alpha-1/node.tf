@@ -20,6 +20,11 @@ variable "subnet_id" {
   description = "Subnet id where instance should be provisioned"
 }
 
+# Outputs
+output "instance" {
+  value = aws_instance.beacon
+}
+
 # AMI
 data "aws_ami" "ubuntu" {
   most_recent = true
