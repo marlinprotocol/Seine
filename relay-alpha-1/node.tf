@@ -22,7 +22,7 @@ variable "subnet_id" {
 
 # Outputs
 output "instance" {
-  value = aws_instance.beacon
+  value = aws_instance.relay
 }
 
 # AMI
@@ -48,8 +48,8 @@ data "aws_ami" "ubuntu" {
 }
 
 # IAM role
-resource "aws_iam_role" "beacon" {
-  name = "${var.project}_beacon"
+resource "aws_iam_role" "relay" {
+  name = "${var.project}_relay"
 
   assume_role_policy = <<EOF
 {
@@ -68,27 +68,27 @@ EOF
 }
 
 # IAM profile
-resource "aws_iam_instance_profile" "beacon" {
-  name = "${var.project}_beacon"
-  role = "${aws_iam_role.beacon.name}"
+resource "aws_iam_instance_profile" "relay" {
+  name = "${var.project}_relay"
+  role = "${aws_iam_role.relay.name}"
 }
 
 # Instance
-resource "aws_instance" "beacon" {
+resource "aws_instance" "relay" {
   ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t3.micro"
   key_name = "${var.key_name}"
   vpc_security_group_ids = var.security_group_ids
   subnet_id = "${var.subnet_id}"
-  iam_instance_profile = "${aws_iam_instance_profile.beacon.name}"
+  iam_instance_profile = "${aws_iam_instance_profile.relay.name}"
 
   tags = {
     project = "${var.project}"
-    role = "beacon"
+    role = "relay"
   }
 
   volume_tags = {
     project = "${var.project}"
-    role = "beacon"
+    role = "relay"
   }
 }
