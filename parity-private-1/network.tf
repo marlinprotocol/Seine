@@ -1,5 +1,10 @@
+# Project
+locals {
+  project = "parity_private_1"
+}
+
 # Network
 module "network" {
   source  = "../network"
-  project = "parity_private_1"
+  project = local.project
 }
