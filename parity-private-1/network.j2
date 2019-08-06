@@ -8,3 +8,17 @@ module "network" {
   source  = "../network"
   project = local.project
 }
+
+{% for region in regions -%}
+################ {{region}} begin ################
+
+# Provider
+provider "aws" {
+  alias  = "{{region}}"
+  region = "{{region}}"
+}
+
+################ {{region}} end ################
+
+
+{% endfor -%}
