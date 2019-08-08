@@ -9,6 +9,34 @@ module "network" {
   project = local.project
 }
 
+# IAM role
+resource "aws_iam_role" "relay" {
+  provider    = aws.us-east-2
+  name = "${local.project}_relay"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+# IAM profile
+resource "aws_iam_instance_profile" "relay" {
+  provider    = aws.us-east-2
+  name = "${local.project}_relay"
+  role = "${aws_iam_role.relay.name}"
+}
+
 {% for region in regions -%}
 ################ {{region}} begin ################
 
@@ -25,6 +53,7 @@ module "relay_{{region}}" {
   subnet_id          = module.network.{{region}}.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.{{region}}
