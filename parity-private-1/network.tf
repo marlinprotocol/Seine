@@ -9,6 +9,34 @@ module "network" {
   project = local.project
 }
 
+# IAM role
+resource "aws_iam_role" "relay" {
+  provider    = aws.us-east-2
+  name = "${local.project}_relay"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+# IAM profile
+resource "aws_iam_instance_profile" "relay" {
+  provider    = aws.us-east-2
+  name = "${local.project}_relay"
+  role = "${aws_iam_role.relay.name}"
+}
+
 ################ eu-north-1 begin ################
 
 # Provider
@@ -24,6 +52,7 @@ module "relay_eu-north-1" {
   subnet_id          = module.network.eu-north-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.eu-north-1
@@ -48,6 +77,7 @@ module "relay_ap-south-1" {
   subnet_id          = module.network.ap-south-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.ap-south-1
@@ -72,6 +102,7 @@ module "relay_eu-west-3" {
   subnet_id          = module.network.eu-west-3.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.eu-west-3
@@ -96,6 +127,7 @@ module "relay_eu-west-2" {
   subnet_id          = module.network.eu-west-2.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.eu-west-2
@@ -120,6 +152,7 @@ module "relay_eu-west-1" {
   subnet_id          = module.network.eu-west-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.eu-west-1
@@ -144,6 +177,7 @@ module "relay_ap-northeast-2" {
   subnet_id          = module.network.ap-northeast-2.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.ap-northeast-2
@@ -168,6 +202,7 @@ module "relay_ap-northeast-1" {
   subnet_id          = module.network.ap-northeast-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.ap-northeast-1
@@ -192,6 +227,7 @@ module "relay_sa-east-1" {
   subnet_id          = module.network.sa-east-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.sa-east-1
@@ -216,6 +252,7 @@ module "relay_ca-central-1" {
   subnet_id          = module.network.ca-central-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.ca-central-1
@@ -240,6 +277,7 @@ module "relay_ap-southeast-1" {
   subnet_id          = module.network.ap-southeast-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.ap-southeast-1
@@ -264,6 +302,7 @@ module "relay_ap-southeast-2" {
   subnet_id          = module.network.ap-southeast-2.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.ap-southeast-2
@@ -288,6 +327,7 @@ module "relay_eu-central-1" {
   subnet_id          = module.network.eu-central-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.eu-central-1
@@ -312,6 +352,7 @@ module "relay_us-east-1" {
   subnet_id          = module.network.us-east-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.us-east-1
@@ -336,6 +377,7 @@ module "relay_us-east-2" {
   subnet_id          = module.network.us-east-2.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.us-east-2
@@ -360,6 +402,7 @@ module "relay_us-west-1" {
   subnet_id          = module.network.us-west-1.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.us-west-1
@@ -384,6 +427,7 @@ module "relay_us-west-2" {
   subnet_id          = module.network.us-west-2.subnet.id
   key_name           = "ltcdemo"
   security_group_ids = []
+  iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
     aws = aws.us-west-2
