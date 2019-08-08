@@ -18,6 +18,19 @@ provider "aws" {
   region = "{{region}}"
 }
 
+# Relay
+module "relay_{{region}}" {
+  source             = "../relay-alpha-1"
+  project            = local.project
+  subnet_id          = module.network.{{region}}.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = []
+
+  providers = {
+    aws = aws.{{region}}
+  }
+}
+
 ################ {{region}} end ################
 
 
