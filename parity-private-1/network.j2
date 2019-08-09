@@ -46,13 +46,34 @@ provider "aws" {
   region = "{{region}}"
 }
 
+# SSH
+resource "aws_security_group" "ssh_{{region}}" {
+  provider    = aws.{{region}}
+  name_prefix = "ssh-"
+  description = "SSH access"
+  vpc_id      = module.network.{{region}}.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_{{region}}" {
   source             = "../relay-alpha-1"
   project            = local.project
   subnet_id          = module.network.{{region}}.subnet.id
   key_name           = "ltcdemo"
-  security_group_ids = []
+  security_group_ids = [
+    aws_security_group.ssh_{{region}}.id,
+  ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
   providers = {
