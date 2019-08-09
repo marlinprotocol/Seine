@@ -65,6 +65,25 @@ resource "aws_security_group" "ssh_{{region}}" {
   }
 }
 
+# Egress
+resource "aws_security_group" "egress_{{region}}" {
+  provider    = aws.{{region}}
+  name_prefix = "egress-"
+  description = "Egress traffic"
+  vpc_id      = module.network.{{region}}.vpc.id
+
+  egress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_{{region}}" {
   source             = "../relay-alpha-1"
@@ -73,6 +92,7 @@ module "relay_{{region}}" {
   key_name           = "ltcdemo"
   security_group_ids = [
     aws_security_group.ssh_{{region}}.id,
+    aws_security_group.egress_{{region}}.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
