@@ -105,3 +105,19 @@ module "relay_{{region}}" {
 
 
 {% endfor -%}
+
+# Beacon
+module "beacon" {
+  source             = "../beacon-alpha-1"
+  project            = local.project
+  subnet_id          = module.network.us-east-2.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_us-east-2.id,
+    aws_security_group.egress_us-east-2.id
+  ]
+
+  providers = {
+    aws = aws.us-east-2
+  }
+}
