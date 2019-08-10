@@ -84,34 +84,12 @@ resource "aws_security_group" "egress_{{region}}" {
   }
 }
 
-# Relay
-module "relay_{{region}}" {
-  source             = "../relay-alpha-1"
-  project            = local.project
-  subnet_id          = module.network.{{region}}.subnet.id
-  key_name           = "ltcdemo"
-  security_group_ids = [
-    aws_security_group.ssh_{{region}}.id,
-    aws_security_group.egress_{{region}}.id
-  ]
-  iam_instance_profile = aws_iam_instance_profile.relay.name
-
-  providers = {
-    aws = aws.{{region}}
-  }
-}
-
-################ {{region}} end ################
-
-
-{% endfor -%}
-
 # Discovery
-resource "aws_security_group" "discovery_us-east-2" {
-  provider    = aws.us-east-2
+resource "aws_security_group" "discovery_{{region}}" {
+  provider    = aws.{{region}}
   name_prefix = "discovery-"
   description = "Discovery beacon access"
-  vpc_id      = module.network.us-east-2.vpc.id
+  vpc_id      = module.network.{{region}}.vpc.id
 
   ingress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -124,6 +102,29 @@ resource "aws_security_group" "discovery_us-east-2" {
     project = local.project
   }
 }
+
+# Relay
+module "relay_{{region}}" {
+  source             = "../relay-alpha-1"
+  project            = local.project
+  subnet_id          = module.network.{{region}}.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_{{region}}.id,
+    aws_security_group.egress_{{region}}.id,
+    aws_security_group.discovery_{{region}}.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.relay.name
+
+  providers = {
+    aws = aws.{{region}}
+  }
+}
+
+################ {{region}} end ################
+
+
+{% endfor -%}
 
 # Beacon
 module "beacon" {
