@@ -1093,6 +1093,25 @@ module "relay_us-west-2" {
 ################ us-west-2 end ################
 
 
+# Discovery
+resource "aws_security_group" "discovery_us-east-2" {
+  provider    = aws.us-east-2
+  name_prefix = "discovery-"
+  description = "Discovery beacon access"
+  vpc_id      = module.network.us-east-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 8002
+    to_port     = 8002
+    protocol    = "udp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Beacon
 module "beacon" {
   source             = "../beacon-alpha-1"
@@ -1101,7 +1120,8 @@ module "beacon" {
   key_name           = "ltcdemo"
   security_group_ids = [
     aws_security_group.ssh_us-east-2.id,
-    aws_security_group.egress_us-east-2.id
+    aws_security_group.egress_us-east-2.id,
+    aws_security_group.discovery_us-east-2.id
   ]
 
   providers = {
