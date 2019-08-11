@@ -58,6 +58,23 @@ provider "aws" {
   region = "{{region}}"
 }
 
+# Monitoring Peering
+module "{{region}}-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.{{region}}.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.{{region}}.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.{{(loop.index-1)*16}}/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.{{region}}"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_{{region}}" {
   provider    = aws.{{region}}
