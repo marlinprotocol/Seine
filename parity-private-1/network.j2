@@ -37,6 +37,18 @@ resource "aws_iam_instance_profile" "relay" {
   role = "${aws_iam_role.relay.name}"
 }
 
+# Monitoring subnet
+data "aws_subnet" "monitoring" {
+  provider = aws.us-east-2
+  id = "subnet-06663c1f3455564a4"
+}
+
+# Monitoring route table
+data "aws_route_table" "monitoring" {
+  provider = aws.us-east-2
+  subnet_id = data.aws_subnet.monitoring.id
+}
+
 {% for region in regions -%}
 ################ {{region}} begin ################
 
