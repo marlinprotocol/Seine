@@ -37,12 +37,41 @@ resource "aws_iam_instance_profile" "relay" {
   role = "${aws_iam_role.relay.name}"
 }
 
+# Monitoring subnet
+data "aws_subnet" "monitoring" {
+  provider = aws.us-east-2
+  id = "subnet-06663c1f3455564a4"
+}
+
+# Monitoring route table
+data "aws_route_table" "monitoring" {
+  provider = aws.us-east-2
+  subnet_id = data.aws_subnet.monitoring.id
+}
+
 ################ eu-north-1 begin ################
 
 # Provider
 provider "aws" {
   alias  = "eu-north-1"
   region = "eu-north-1"
+}
+
+# Monitoring Peering
+module "eu-north-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.eu-north-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.eu-north-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.0/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.eu-north-1"
+    aws.dst = "aws.us-east-2"
+  }
 }
 
 # SSH
@@ -151,6 +180,23 @@ provider "aws" {
   region = "ap-south-1"
 }
 
+# Monitoring Peering
+module "ap-south-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.ap-south-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.ap-south-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.16/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.ap-south-1"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_ap-south-1" {
   provider    = aws.ap-south-1
@@ -255,6 +301,23 @@ module "relay_ap-south-1" {
 provider "aws" {
   alias  = "eu-west-3"
   region = "eu-west-3"
+}
+
+# Monitoring Peering
+module "eu-west-3-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.eu-west-3.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.eu-west-3.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.32/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.eu-west-3"
+    aws.dst = "aws.us-east-2"
+  }
 }
 
 # SSH
@@ -363,6 +426,23 @@ provider "aws" {
   region = "eu-west-2"
 }
 
+# Monitoring Peering
+module "eu-west-2-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.eu-west-2.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.eu-west-2.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.48/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.eu-west-2"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_eu-west-2" {
   provider    = aws.eu-west-2
@@ -467,6 +547,23 @@ module "relay_eu-west-2" {
 provider "aws" {
   alias  = "eu-west-1"
   region = "eu-west-1"
+}
+
+# Monitoring Peering
+module "eu-west-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.eu-west-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.eu-west-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.64/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.eu-west-1"
+    aws.dst = "aws.us-east-2"
+  }
 }
 
 # SSH
@@ -575,6 +672,23 @@ provider "aws" {
   region = "ap-northeast-2"
 }
 
+# Monitoring Peering
+module "ap-northeast-2-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.ap-northeast-2.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.ap-northeast-2.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.80/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.ap-northeast-2"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_ap-northeast-2" {
   provider    = aws.ap-northeast-2
@@ -679,6 +793,23 @@ module "relay_ap-northeast-2" {
 provider "aws" {
   alias  = "ap-northeast-1"
   region = "ap-northeast-1"
+}
+
+# Monitoring Peering
+module "ap-northeast-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.ap-northeast-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.ap-northeast-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.96/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.ap-northeast-1"
+    aws.dst = "aws.us-east-2"
+  }
 }
 
 # SSH
@@ -787,6 +918,23 @@ provider "aws" {
   region = "sa-east-1"
 }
 
+# Monitoring Peering
+module "sa-east-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.sa-east-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.sa-east-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.112/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.sa-east-1"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_sa-east-1" {
   provider    = aws.sa-east-1
@@ -891,6 +1039,23 @@ module "relay_sa-east-1" {
 provider "aws" {
   alias  = "ca-central-1"
   region = "ca-central-1"
+}
+
+# Monitoring Peering
+module "ca-central-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.ca-central-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.ca-central-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.128/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.ca-central-1"
+    aws.dst = "aws.us-east-2"
+  }
 }
 
 # SSH
@@ -999,6 +1164,23 @@ provider "aws" {
   region = "ap-southeast-1"
 }
 
+# Monitoring Peering
+module "ap-southeast-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.ap-southeast-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.ap-southeast-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.144/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.ap-southeast-1"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_ap-southeast-1" {
   provider    = aws.ap-southeast-1
@@ -1103,6 +1285,23 @@ module "relay_ap-southeast-1" {
 provider "aws" {
   alias  = "ap-southeast-2"
   region = "ap-southeast-2"
+}
+
+# Monitoring Peering
+module "ap-southeast-2-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.ap-southeast-2.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.ap-southeast-2.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.160/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.ap-southeast-2"
+    aws.dst = "aws.us-east-2"
+  }
 }
 
 # SSH
@@ -1211,6 +1410,23 @@ provider "aws" {
   region = "eu-central-1"
 }
 
+# Monitoring Peering
+module "eu-central-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.eu-central-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.eu-central-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.176/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.eu-central-1"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_eu-central-1" {
   provider    = aws.eu-central-1
@@ -1315,6 +1531,23 @@ module "relay_eu-central-1" {
 provider "aws" {
   alias  = "us-east-1"
   region = "us-east-1"
+}
+
+# Monitoring Peering
+module "us-east-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.us-east-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.us-east-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.192/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.us-east-1"
+    aws.dst = "aws.us-east-2"
+  }
 }
 
 # SSH
@@ -1423,6 +1656,23 @@ provider "aws" {
   region = "us-east-2"
 }
 
+# Monitoring Peering
+module "us-east-2-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.us-east-2.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.us-east-2.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.208/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.us-east-2"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_us-east-2" {
   provider    = aws.us-east-2
@@ -1529,6 +1779,23 @@ provider "aws" {
   region = "us-west-1"
 }
 
+# Monitoring Peering
+module "us-west-1-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.us-west-1.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.us-west-1.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.224/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.us-west-1"
+    aws.dst = "aws.us-east-2"
+  }
+}
+
 # SSH
 resource "aws_security_group" "ssh_us-west-1" {
   provider    = aws.us-west-1
@@ -1633,6 +1900,23 @@ module "relay_us-west-1" {
 provider "aws" {
   alias  = "us-west-2"
   region = "us-west-2"
+}
+
+# Monitoring Peering
+module "us-west-2-monitoring" {
+  source = "../network/modules/peering_connection"
+  project = local.project
+  src_vpc_id = module.network.us-west-2.vpc.id
+  dst_vpc_id = data.aws_subnet.monitoring.vpc_id
+  src_route_table_id = module.network.us-west-2.route_table.id
+  dst_route_table_id = data.aws_route_table.monitoring.id
+  src_cidr = "192.168.32.240/28"
+  dst_cidr = data.aws_subnet.monitoring.cidr_block
+
+  providers = {
+    aws.src = "aws.us-west-2"
+    aws.dst = "aws.us-east-2"
+  }
 }
 
 # SSH
