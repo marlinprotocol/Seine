@@ -102,6 +102,25 @@ resource "aws_security_group" "discovery_eu-north-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_eu-north-1" {
+  provider    = aws.eu-north-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.eu-north-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_eu-north-1" {
   source             = "../relay-alpha-1"
@@ -111,7 +130,8 @@ module "relay_eu-north-1" {
   security_group_ids = [
     aws_security_group.ssh_eu-north-1.id,
     aws_security_group.egress_eu-north-1.id,
-    aws_security_group.discovery_eu-north-1.id
+    aws_security_group.discovery_eu-north-1.id,
+    aws_security_group.internal_eu-north-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -188,6 +208,25 @@ resource "aws_security_group" "discovery_ap-south-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_ap-south-1" {
+  provider    = aws.ap-south-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.ap-south-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_ap-south-1" {
   source             = "../relay-alpha-1"
@@ -197,7 +236,8 @@ module "relay_ap-south-1" {
   security_group_ids = [
     aws_security_group.ssh_ap-south-1.id,
     aws_security_group.egress_ap-south-1.id,
-    aws_security_group.discovery_ap-south-1.id
+    aws_security_group.discovery_ap-south-1.id,
+    aws_security_group.internal_ap-south-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -274,6 +314,25 @@ resource "aws_security_group" "discovery_eu-west-3" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_eu-west-3" {
+  provider    = aws.eu-west-3
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.eu-west-3.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_eu-west-3" {
   source             = "../relay-alpha-1"
@@ -283,7 +342,8 @@ module "relay_eu-west-3" {
   security_group_ids = [
     aws_security_group.ssh_eu-west-3.id,
     aws_security_group.egress_eu-west-3.id,
-    aws_security_group.discovery_eu-west-3.id
+    aws_security_group.discovery_eu-west-3.id,
+    aws_security_group.internal_eu-west-3.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -360,6 +420,25 @@ resource "aws_security_group" "discovery_eu-west-2" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_eu-west-2" {
+  provider    = aws.eu-west-2
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.eu-west-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_eu-west-2" {
   source             = "../relay-alpha-1"
@@ -369,7 +448,8 @@ module "relay_eu-west-2" {
   security_group_ids = [
     aws_security_group.ssh_eu-west-2.id,
     aws_security_group.egress_eu-west-2.id,
-    aws_security_group.discovery_eu-west-2.id
+    aws_security_group.discovery_eu-west-2.id,
+    aws_security_group.internal_eu-west-2.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -446,6 +526,25 @@ resource "aws_security_group" "discovery_eu-west-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_eu-west-1" {
+  provider    = aws.eu-west-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.eu-west-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_eu-west-1" {
   source             = "../relay-alpha-1"
@@ -455,7 +554,8 @@ module "relay_eu-west-1" {
   security_group_ids = [
     aws_security_group.ssh_eu-west-1.id,
     aws_security_group.egress_eu-west-1.id,
-    aws_security_group.discovery_eu-west-1.id
+    aws_security_group.discovery_eu-west-1.id,
+    aws_security_group.internal_eu-west-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -532,6 +632,25 @@ resource "aws_security_group" "discovery_ap-northeast-2" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_ap-northeast-2" {
+  provider    = aws.ap-northeast-2
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.ap-northeast-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_ap-northeast-2" {
   source             = "../relay-alpha-1"
@@ -541,7 +660,8 @@ module "relay_ap-northeast-2" {
   security_group_ids = [
     aws_security_group.ssh_ap-northeast-2.id,
     aws_security_group.egress_ap-northeast-2.id,
-    aws_security_group.discovery_ap-northeast-2.id
+    aws_security_group.discovery_ap-northeast-2.id,
+    aws_security_group.internal_ap-northeast-2.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -618,6 +738,25 @@ resource "aws_security_group" "discovery_ap-northeast-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_ap-northeast-1" {
+  provider    = aws.ap-northeast-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.ap-northeast-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_ap-northeast-1" {
   source             = "../relay-alpha-1"
@@ -627,7 +766,8 @@ module "relay_ap-northeast-1" {
   security_group_ids = [
     aws_security_group.ssh_ap-northeast-1.id,
     aws_security_group.egress_ap-northeast-1.id,
-    aws_security_group.discovery_ap-northeast-1.id
+    aws_security_group.discovery_ap-northeast-1.id,
+    aws_security_group.internal_ap-northeast-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -704,6 +844,25 @@ resource "aws_security_group" "discovery_sa-east-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_sa-east-1" {
+  provider    = aws.sa-east-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.sa-east-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_sa-east-1" {
   source             = "../relay-alpha-1"
@@ -713,7 +872,8 @@ module "relay_sa-east-1" {
   security_group_ids = [
     aws_security_group.ssh_sa-east-1.id,
     aws_security_group.egress_sa-east-1.id,
-    aws_security_group.discovery_sa-east-1.id
+    aws_security_group.discovery_sa-east-1.id,
+    aws_security_group.internal_sa-east-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -790,6 +950,25 @@ resource "aws_security_group" "discovery_ca-central-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_ca-central-1" {
+  provider    = aws.ca-central-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.ca-central-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_ca-central-1" {
   source             = "../relay-alpha-1"
@@ -799,7 +978,8 @@ module "relay_ca-central-1" {
   security_group_ids = [
     aws_security_group.ssh_ca-central-1.id,
     aws_security_group.egress_ca-central-1.id,
-    aws_security_group.discovery_ca-central-1.id
+    aws_security_group.discovery_ca-central-1.id,
+    aws_security_group.internal_ca-central-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -876,6 +1056,25 @@ resource "aws_security_group" "discovery_ap-southeast-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_ap-southeast-1" {
+  provider    = aws.ap-southeast-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.ap-southeast-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_ap-southeast-1" {
   source             = "../relay-alpha-1"
@@ -885,7 +1084,8 @@ module "relay_ap-southeast-1" {
   security_group_ids = [
     aws_security_group.ssh_ap-southeast-1.id,
     aws_security_group.egress_ap-southeast-1.id,
-    aws_security_group.discovery_ap-southeast-1.id
+    aws_security_group.discovery_ap-southeast-1.id,
+    aws_security_group.internal_ap-southeast-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -962,6 +1162,25 @@ resource "aws_security_group" "discovery_ap-southeast-2" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_ap-southeast-2" {
+  provider    = aws.ap-southeast-2
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.ap-southeast-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_ap-southeast-2" {
   source             = "../relay-alpha-1"
@@ -971,7 +1190,8 @@ module "relay_ap-southeast-2" {
   security_group_ids = [
     aws_security_group.ssh_ap-southeast-2.id,
     aws_security_group.egress_ap-southeast-2.id,
-    aws_security_group.discovery_ap-southeast-2.id
+    aws_security_group.discovery_ap-southeast-2.id,
+    aws_security_group.internal_ap-southeast-2.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -1048,6 +1268,25 @@ resource "aws_security_group" "discovery_eu-central-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_eu-central-1" {
+  provider    = aws.eu-central-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.eu-central-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_eu-central-1" {
   source             = "../relay-alpha-1"
@@ -1057,7 +1296,8 @@ module "relay_eu-central-1" {
   security_group_ids = [
     aws_security_group.ssh_eu-central-1.id,
     aws_security_group.egress_eu-central-1.id,
-    aws_security_group.discovery_eu-central-1.id
+    aws_security_group.discovery_eu-central-1.id,
+    aws_security_group.internal_eu-central-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -1134,6 +1374,25 @@ resource "aws_security_group" "discovery_us-east-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_us-east-1" {
+  provider    = aws.us-east-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.us-east-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_us-east-1" {
   source             = "../relay-alpha-1"
@@ -1143,7 +1402,8 @@ module "relay_us-east-1" {
   security_group_ids = [
     aws_security_group.ssh_us-east-1.id,
     aws_security_group.egress_us-east-1.id,
-    aws_security_group.discovery_us-east-1.id
+    aws_security_group.discovery_us-east-1.id,
+    aws_security_group.internal_us-east-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -1220,6 +1480,25 @@ resource "aws_security_group" "discovery_us-east-2" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_us-east-2" {
+  provider    = aws.us-east-2
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.us-east-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_us-east-2" {
   source             = "../relay-alpha-1"
@@ -1229,7 +1508,8 @@ module "relay_us-east-2" {
   security_group_ids = [
     aws_security_group.ssh_us-east-2.id,
     aws_security_group.egress_us-east-2.id,
-    aws_security_group.discovery_us-east-2.id
+    aws_security_group.discovery_us-east-2.id,
+    aws_security_group.internal_us-east-2.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -1306,6 +1586,25 @@ resource "aws_security_group" "discovery_us-west-1" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_us-west-1" {
+  provider    = aws.us-west-1
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.us-west-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_us-west-1" {
   source             = "../relay-alpha-1"
@@ -1315,7 +1614,8 @@ module "relay_us-west-1" {
   security_group_ids = [
     aws_security_group.ssh_us-west-1.id,
     aws_security_group.egress_us-west-1.id,
-    aws_security_group.discovery_us-west-1.id
+    aws_security_group.discovery_us-west-1.id,
+    aws_security_group.internal_us-west-1.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
@@ -1392,6 +1692,25 @@ resource "aws_security_group" "discovery_us-west-2" {
   }
 }
 
+# Internal
+resource "aws_security_group" "internal_us-west-2" {
+  provider    = aws.us-west-2
+  name_prefix = "internal-"
+  description = "Internal traffic"
+  vpc_id      = module.network.us-west-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["10.0.0.0/16"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 # Relay
 module "relay_us-west-2" {
   source             = "../relay-alpha-1"
@@ -1401,7 +1720,8 @@ module "relay_us-west-2" {
   security_group_ids = [
     aws_security_group.ssh_us-west-2.id,
     aws_security_group.egress_us-west-2.id,
-    aws_security_group.discovery_us-west-2.id
+    aws_security_group.discovery_us-west-2.id,
+    aws_security_group.internal_us-west-2.id
   ]
   iam_instance_profile = aws_iam_instance_profile.relay.name
 
