@@ -55,7 +55,7 @@ data "aws_ami" "ubuntu" {
 # Instance
 resource "aws_instance" "eth" {
   ami                    = "${data.aws_ami.ubuntu.id}"
-  instance_type          = "c5.large"
+  instance_type          = "i3.large"
   key_name               = "${var.key_name}"
   vpc_security_group_ids = var.security_group_ids
   subnet_id              = "${var.subnet_id}"
@@ -69,5 +69,14 @@ resource "aws_instance" "eth" {
   volume_tags = {
     project = "${var.project}"
     role    = "eth"
+  }
+
+  root_block_device {
+    volume_type = "gp2"
+  }
+
+  ephemeral_block_device {
+    device_name  = "/dev/sdb"
+    virtual_name = "ephemeral0"
   }
 }
