@@ -225,6 +225,24 @@ resource "aws_security_group" "eth_eu-north-1" {
   }
 }
 
+module "eth_eu-north-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.eu-north-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_eu-north-1.id,
+    aws_security_group.egress_eu-north-1.id,
+    aws_security_group.discovery_eu-north-1.id,
+    aws_security_group.eth_eu-north-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.eu-north-1
+  }
+}
+
 ################ eu-north-1 end ################
 
 
@@ -373,6 +391,24 @@ resource "aws_security_group" "eth_ap-south-1" {
 
   tags = {
     project = local.project
+  }
+}
+
+module "eth_ap-south-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.ap-south-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_ap-south-1.id,
+    aws_security_group.egress_ap-south-1.id,
+    aws_security_group.discovery_ap-south-1.id,
+    aws_security_group.eth_ap-south-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.ap-south-1
   }
 }
 
@@ -527,6 +563,24 @@ resource "aws_security_group" "eth_eu-west-3" {
   }
 }
 
+module "eth_eu-west-3" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.eu-west-3.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_eu-west-3.id,
+    aws_security_group.egress_eu-west-3.id,
+    aws_security_group.discovery_eu-west-3.id,
+    aws_security_group.eth_eu-west-3.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.eu-west-3
+  }
+}
+
 ################ eu-west-3 end ################
 
 
@@ -675,6 +729,24 @@ resource "aws_security_group" "eth_eu-west-2" {
 
   tags = {
     project = local.project
+  }
+}
+
+module "eth_eu-west-2" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.eu-west-2.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_eu-west-2.id,
+    aws_security_group.egress_eu-west-2.id,
+    aws_security_group.discovery_eu-west-2.id,
+    aws_security_group.eth_eu-west-2.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.eu-west-2
   }
 }
 
@@ -829,6 +901,24 @@ resource "aws_security_group" "eth_eu-west-1" {
   }
 }
 
+module "eth_eu-west-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.eu-west-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_eu-west-1.id,
+    aws_security_group.egress_eu-west-1.id,
+    aws_security_group.discovery_eu-west-1.id,
+    aws_security_group.eth_eu-west-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.eu-west-1
+  }
+}
+
 ################ eu-west-1 end ################
 
 
@@ -977,6 +1067,24 @@ resource "aws_security_group" "eth_ap-northeast-2" {
 
   tags = {
     project = local.project
+  }
+}
+
+module "eth_ap-northeast-2" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.ap-northeast-2.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_ap-northeast-2.id,
+    aws_security_group.egress_ap-northeast-2.id,
+    aws_security_group.discovery_ap-northeast-2.id,
+    aws_security_group.eth_ap-northeast-2.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.ap-northeast-2
   }
 }
 
@@ -1131,6 +1239,24 @@ resource "aws_security_group" "eth_ap-northeast-1" {
   }
 }
 
+module "eth_ap-northeast-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.ap-northeast-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_ap-northeast-1.id,
+    aws_security_group.egress_ap-northeast-1.id,
+    aws_security_group.discovery_ap-northeast-1.id,
+    aws_security_group.eth_ap-northeast-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.ap-northeast-1
+  }
+}
+
 ################ ap-northeast-1 end ################
 
 
@@ -1279,6 +1405,24 @@ resource "aws_security_group" "eth_sa-east-1" {
 
   tags = {
     project = local.project
+  }
+}
+
+module "eth_sa-east-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.sa-east-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_sa-east-1.id,
+    aws_security_group.egress_sa-east-1.id,
+    aws_security_group.discovery_sa-east-1.id,
+    aws_security_group.eth_sa-east-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.sa-east-1
   }
 }
 
@@ -1433,6 +1577,24 @@ resource "aws_security_group" "eth_ca-central-1" {
   }
 }
 
+module "eth_ca-central-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.ca-central-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_ca-central-1.id,
+    aws_security_group.egress_ca-central-1.id,
+    aws_security_group.discovery_ca-central-1.id,
+    aws_security_group.eth_ca-central-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.ca-central-1
+  }
+}
+
 ################ ca-central-1 end ################
 
 
@@ -1581,6 +1743,24 @@ resource "aws_security_group" "eth_ap-southeast-1" {
 
   tags = {
     project = local.project
+  }
+}
+
+module "eth_ap-southeast-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.ap-southeast-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_ap-southeast-1.id,
+    aws_security_group.egress_ap-southeast-1.id,
+    aws_security_group.discovery_ap-southeast-1.id,
+    aws_security_group.eth_ap-southeast-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.ap-southeast-1
   }
 }
 
@@ -1735,6 +1915,24 @@ resource "aws_security_group" "eth_ap-southeast-2" {
   }
 }
 
+module "eth_ap-southeast-2" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.ap-southeast-2.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_ap-southeast-2.id,
+    aws_security_group.egress_ap-southeast-2.id,
+    aws_security_group.discovery_ap-southeast-2.id,
+    aws_security_group.eth_ap-southeast-2.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.ap-southeast-2
+  }
+}
+
 ################ ap-southeast-2 end ################
 
 
@@ -1883,6 +2081,24 @@ resource "aws_security_group" "eth_eu-central-1" {
 
   tags = {
     project = local.project
+  }
+}
+
+module "eth_eu-central-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.eu-central-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_eu-central-1.id,
+    aws_security_group.egress_eu-central-1.id,
+    aws_security_group.discovery_eu-central-1.id,
+    aws_security_group.eth_eu-central-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.eu-central-1
   }
 }
 
@@ -2037,6 +2253,24 @@ resource "aws_security_group" "eth_us-east-1" {
   }
 }
 
+module "eth_us-east-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.us-east-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_us-east-1.id,
+    aws_security_group.egress_us-east-1.id,
+    aws_security_group.discovery_us-east-1.id,
+    aws_security_group.eth_us-east-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.us-east-1
+  }
+}
+
 ################ us-east-1 end ################
 
 
@@ -2185,6 +2419,24 @@ resource "aws_security_group" "eth_us-east-2" {
 
   tags = {
     project = local.project
+  }
+}
+
+module "eth_us-east-2" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.us-east-2.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_us-east-2.id,
+    aws_security_group.egress_us-east-2.id,
+    aws_security_group.discovery_us-east-2.id,
+    aws_security_group.eth_us-east-2.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.us-east-2
   }
 }
 
@@ -2339,6 +2591,24 @@ resource "aws_security_group" "eth_us-west-1" {
   }
 }
 
+module "eth_us-west-1" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.us-west-1.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_us-west-1.id,
+    aws_security_group.egress_us-west-1.id,
+    aws_security_group.discovery_us-west-1.id,
+    aws_security_group.eth_us-west-1.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.us-west-1
+  }
+}
+
 ################ us-west-1 end ################
 
 
@@ -2487,6 +2757,24 @@ resource "aws_security_group" "eth_us-west-2" {
 
   tags = {
     project = local.project
+  }
+}
+
+module "eth_us-west-2" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.us-west-2.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_us-west-2.id,
+    aws_security_group.egress_us-west-2.id,
+    aws_security_group.discovery_us-west-2.id,
+    aws_security_group.eth_us-west-2.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.us-west-2
   }
 }
 
