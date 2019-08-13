@@ -226,6 +226,24 @@ resource "aws_security_group" "eth_{{region}}" {
   }
 }
 
+module "eth_{{region}}" {
+  source             = "../ethereum_node"
+  project            = local.project
+  subnet_id          = module.network.{{region}}.subnet.id
+  key_name           = "ltcdemo"
+  security_group_ids = [
+    aws_security_group.ssh_{{region}}.id,
+    aws_security_group.egress_{{region}}.id,
+    aws_security_group.discovery_{{region}}.id,
+    aws_security_group.eth_{{region}}.id
+  ]
+  iam_instance_profile = aws_iam_instance_profile.eth.name
+
+  providers = {
+    aws = aws.{{region}}
+  }
+}
+
 ################ {{region}} end ################
 
 
