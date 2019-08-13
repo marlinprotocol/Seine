@@ -198,6 +198,34 @@ module "relay_{{region}}" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_{{region}}" {
+  provider    = aws.{{region}}
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.{{region}}.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ {{region}} end ################
 
 
