@@ -197,6 +197,34 @@ module "relay_eu-north-1" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_eu-north-1" {
+  provider    = aws.eu-north-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.eu-north-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ eu-north-1 end ################
 
 
@@ -317,6 +345,34 @@ module "relay_ap-south-1" {
 
   providers = {
     aws = aws.ap-south-1
+  }
+}
+
+# Ethereum
+resource "aws_security_group" "eth_ap-south-1" {
+  provider    = aws.ap-south-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.ap-south-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
   }
 }
 
@@ -443,6 +499,34 @@ module "relay_eu-west-3" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_eu-west-3" {
+  provider    = aws.eu-west-3
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.eu-west-3.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ eu-west-3 end ################
 
 
@@ -563,6 +647,34 @@ module "relay_eu-west-2" {
 
   providers = {
     aws = aws.eu-west-2
+  }
+}
+
+# Ethereum
+resource "aws_security_group" "eth_eu-west-2" {
+  provider    = aws.eu-west-2
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.eu-west-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
   }
 }
 
@@ -689,6 +801,34 @@ module "relay_eu-west-1" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_eu-west-1" {
+  provider    = aws.eu-west-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.eu-west-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ eu-west-1 end ################
 
 
@@ -809,6 +949,34 @@ module "relay_ap-northeast-2" {
 
   providers = {
     aws = aws.ap-northeast-2
+  }
+}
+
+# Ethereum
+resource "aws_security_group" "eth_ap-northeast-2" {
+  provider    = aws.ap-northeast-2
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.ap-northeast-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
   }
 }
 
@@ -935,6 +1103,34 @@ module "relay_ap-northeast-1" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_ap-northeast-1" {
+  provider    = aws.ap-northeast-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.ap-northeast-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ ap-northeast-1 end ################
 
 
@@ -1055,6 +1251,34 @@ module "relay_sa-east-1" {
 
   providers = {
     aws = aws.sa-east-1
+  }
+}
+
+# Ethereum
+resource "aws_security_group" "eth_sa-east-1" {
+  provider    = aws.sa-east-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.sa-east-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
   }
 }
 
@@ -1181,6 +1405,34 @@ module "relay_ca-central-1" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_ca-central-1" {
+  provider    = aws.ca-central-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.ca-central-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ ca-central-1 end ################
 
 
@@ -1301,6 +1553,34 @@ module "relay_ap-southeast-1" {
 
   providers = {
     aws = aws.ap-southeast-1
+  }
+}
+
+# Ethereum
+resource "aws_security_group" "eth_ap-southeast-1" {
+  provider    = aws.ap-southeast-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.ap-southeast-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
   }
 }
 
@@ -1427,6 +1707,34 @@ module "relay_ap-southeast-2" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_ap-southeast-2" {
+  provider    = aws.ap-southeast-2
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.ap-southeast-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ ap-southeast-2 end ################
 
 
@@ -1547,6 +1855,34 @@ module "relay_eu-central-1" {
 
   providers = {
     aws = aws.eu-central-1
+  }
+}
+
+# Ethereum
+resource "aws_security_group" "eth_eu-central-1" {
+  provider    = aws.eu-central-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.eu-central-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
   }
 }
 
@@ -1673,6 +2009,34 @@ module "relay_us-east-1" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_us-east-1" {
+  provider    = aws.us-east-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.us-east-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ us-east-1 end ################
 
 
@@ -1793,6 +2157,34 @@ module "relay_us-east-2" {
 
   providers = {
     aws = aws.us-east-2
+  }
+}
+
+# Ethereum
+resource "aws_security_group" "eth_us-east-2" {
+  provider    = aws.us-east-2
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.us-east-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
   }
 }
 
@@ -1919,6 +2311,34 @@ module "relay_us-west-1" {
   }
 }
 
+# Ethereum
+resource "aws_security_group" "eth_us-west-1" {
+  provider    = aws.us-west-1
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.us-west-1.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
+  }
+}
+
 ################ us-west-1 end ################
 
 
@@ -2039,6 +2459,34 @@ module "relay_us-west-2" {
 
   providers = {
     aws = aws.us-west-2
+  }
+}
+
+# Ethereum
+resource "aws_security_group" "eth_us-west-2" {
+  provider    = aws.us-west-2
+  name_prefix = "eth-"
+  description = "Ethereum traffic"
+  vpc_id      = module.network.us-west-2.vpc.id
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "udp"
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port   = 30303
+    to_port     = 30303
+    protocol    = "tcp"
+  }
+
+  tags = {
+    project = local.project
   }
 }
 
