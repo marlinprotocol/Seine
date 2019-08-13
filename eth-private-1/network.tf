@@ -49,6 +49,34 @@ data "aws_route_table" "monitoring" {
   subnet_id = data.aws_subnet.monitoring.id
 }
 
+# IAM role
+resource "aws_iam_role" "eth" {
+  provider    = aws.us-east-2
+  name = "${local.project}_eth"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+# IAM profile
+resource "aws_iam_instance_profile" "eth" {
+  provider    = aws.us-east-2
+  name = "${local.project}_eth"
+  role = "${aws_iam_role.eth.name}"
+}
+
 ################ eu-north-1 begin ################
 
 # Provider
