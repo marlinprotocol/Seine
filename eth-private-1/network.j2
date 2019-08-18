@@ -1,3 +1,20 @@
+# Outputs
+output eth_ips {
+  value = [
+{% for region in regions -%}
+    "${module.eth_{{region}}.instance.public_ip}"{{ "," if not loop.last }}
+{% endfor -%}
+  ]
+}
+
+output relay_ips {
+  value = [
+{% for region in regions -%}
+    "${module.relay_{{region}}.instance.public_ip}"{{ "," if not loop.last }}
+{% endfor -%}
+  ]
+}
+
 # Project
 locals {
   project = "parity_private_1"
