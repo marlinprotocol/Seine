@@ -1,3 +1,46 @@
+# Outputs
+output eth_ips {
+  value = [
+"${module.eth_eu-north-1.instance.public_ip}",
+"${module.eth_ap-south-1.instance.public_ip}",
+"${module.eth_eu-west-3.instance.public_ip}",
+"${module.eth_eu-west-2.instance.public_ip}",
+"${module.eth_eu-west-1.instance.public_ip}",
+"${module.eth_ap-northeast-2.instance.public_ip}",
+"${module.eth_ap-northeast-1.instance.public_ip}",
+"${module.eth_sa-east-1.instance.public_ip}",
+"${module.eth_ca-central-1.instance.public_ip}",
+"${module.eth_ap-southeast-1.instance.public_ip}",
+"${module.eth_ap-southeast-2.instance.public_ip}",
+"${module.eth_eu-central-1.instance.public_ip}",
+"${module.eth_us-east-1.instance.public_ip}",
+"${module.eth_us-east-2.instance.public_ip}",
+"${module.eth_us-west-1.instance.public_ip}",
+"${module.eth_us-west-2.instance.public_ip}"
+]
+}
+
+output relay_ips {
+  value = [
+"${module.relay_eu-north-1.instance.public_ip}",
+"${module.relay_ap-south-1.instance.public_ip}",
+"${module.relay_eu-west-3.instance.public_ip}",
+"${module.relay_eu-west-2.instance.public_ip}",
+"${module.relay_eu-west-1.instance.public_ip}",
+"${module.relay_ap-northeast-2.instance.public_ip}",
+"${module.relay_ap-northeast-1.instance.public_ip}",
+"${module.relay_sa-east-1.instance.public_ip}",
+"${module.relay_ca-central-1.instance.public_ip}",
+"${module.relay_ap-southeast-1.instance.public_ip}",
+"${module.relay_ap-southeast-2.instance.public_ip}",
+"${module.relay_eu-central-1.instance.public_ip}",
+"${module.relay_us-east-1.instance.public_ip}",
+"${module.relay_us-east-2.instance.public_ip}",
+"${module.relay_us-west-1.instance.public_ip}",
+"${module.relay_us-west-2.instance.public_ip}"
+]
+}
+
 # Project
 locals {
   project = "parity_private_1"
