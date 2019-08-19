@@ -1,0 +1,7 @@
+# Beacon
+- name: Copy beacon executable
+  copy: src={{beacon_path}} dest=/home/ubuntu/beacon
+          owner=ubuntu group=ubuntu mode=0744
+
+- name: Copy beacon executable
+  shell: ./beacon
