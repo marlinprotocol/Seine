@@ -1,0 +1,7 @@
+- hosts: project_eth_private_1:&role_beacon
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  tasks:
+    - name: Deploy beacon
+      import_tasks: ../beacon-alpha-1/deploy.yml
