@@ -3,5 +3,26 @@
   copy: src={{beacon_path}} dest=/home/ubuntu/beacon
           owner=ubuntu group=ubuntu mode=0744
 
-- name: Copy beacon executable
-  shell: ./beacon
+# Supervisor
+- name: Install supervisor
+  apt:
+    name: supervisor
+    update_cache: yes
+  become: yes
+
+- name: Beacon config file
+  copy: src=./beacon.conf dest=/etc/supervisor/conf.d/beacon.conf
+          owner=ubuntu group=ubuntu mode=0644
+  become: yes
+
+- name: Reload supervisor config
+  supervisorctl:
+    name: beacon
+    state: present
+  become: yes
+
+- name: Restart beacon
+  supervisorctl:
+    name: beacon
+    state: restarted
+  become: yes
