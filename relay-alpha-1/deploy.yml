@@ -29,6 +29,11 @@
   tags:
     - buffer
 
+# Node exporter
+- name: Copy node exporter executable
+  copy: src={{node_exporter_path}} dest=/home/ubuntu/node_exporter
+          owner=ubuntu group=ubuntu mode=0744
+
 # Relay
 - name: Copy relay executable
   copy: src={{relay_path}} dest=/home/ubuntu/relay
@@ -41,6 +46,11 @@
   apt:
     name: supervisor
     update_cache: yes
+  become: yes
+
+- name: Node exporter config file
+  copy: src=./node_exporter.conf dest=/etc/supervisor/conf.d/node_exporter.conf
+          owner=ubuntu group=ubuntu mode=0644
   become: yes
 
 - name: Relay config file
