@@ -4,3 +4,29 @@
           owner=ubuntu group=ubuntu mode=0744
   tags:
     - relay
+
+# Supervisor
+- name: Install supervisor
+  apt:
+    name: supervisor
+    update_cache: yes
+  become: yes
+
+- name: Relay config file
+  copy: src=./relay.conf dest=/etc/supervisor/conf.d/relay.conf
+          owner=ubuntu group=ubuntu mode=0644
+  become: yes
+
+- name: Reload supervisor config
+  supervisorctl:
+    name: relay
+    state: present
+  become: yes
+
+- name: Restart relay
+  supervisorctl:
+    name: relay
+    state: restarted
+  become: yes
+  tags:
+    - relay
