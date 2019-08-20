@@ -1,0 +1,6 @@
+# Relay
+- name: Copy relay executable
+  copy: src={{relay_path}} dest=/home/ubuntu/relay
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - relay
