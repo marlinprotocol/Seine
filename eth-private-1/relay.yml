@@ -1,0 +1,10 @@
+- hosts: project_eth_private_1:&role_relay #:&canary_relay
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    project: eth_private_1
+    role: relay
+  tasks:
+    - name: Deploy relays
+      import_tasks: ../relay-alpha-1/deploy.yml
