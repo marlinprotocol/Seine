@@ -5,6 +5,12 @@
   tags:
     - geth
 
+- name: Copy static nodes
+  copy: src=./static-nodes.json dest=/home/ubuntu/eth_data/static-nodes.json
+          owner=ubuntu group=ubuntu mode=0644
+  tags:
+    - geth
+
 # Node exporter
 - name: Copy node_exporter executable
   copy: src={{node_exporter_path}} dest=/home/ubuntu/node_exporter
