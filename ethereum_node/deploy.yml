@@ -4,3 +4,27 @@
           owner=ubuntu group=ubuntu mode=0744
   tags:
     - geth
+
+# Supervisor
+- name: Install supervisor
+  apt:
+    name: supervisor
+    update_cache: yes
+  become: yes
+
+- name: Geth config file
+  copy: src=./geth.conf dest=/etc/supervisor/conf.d/geth.conf
+          owner=ubuntu group=ubuntu mode=0644
+  become: yes
+
+- name: Reload supervisor config
+  command: supervisorctl reload
+  become: yes
+
+- name: Restart geth
+  supervisorctl:
+    name: geth
+    state: restarted
+  become: yes
+  tags:
+    - geth
