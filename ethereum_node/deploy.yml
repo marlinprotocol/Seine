@@ -1,0 +1,6 @@
+# geth
+- name: Copy geth executable
+  copy: src={{geth_path}} dest=/home/ubuntu/geth
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - geth
