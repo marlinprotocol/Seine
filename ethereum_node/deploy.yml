@@ -10,6 +10,19 @@
   copy: src={{node_exporter_path}} dest=/home/ubuntu/node_exporter
           owner=ubuntu group=ubuntu mode=0744
 
+# onramp
+- name: Copy onramp executable
+  copy: src={{onramp_path}} dest=/home/ubuntu/onramp
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - onramp
+
+- name: Copy key
+  copy: src={{onramp_key_path}} dest=/home/ubuntu/pkey.ec.der
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - onramp
+
 # Supervisor
 - name: Install supervisor
   apt:
@@ -24,6 +37,11 @@
 
 - name: Node exporter config file
   copy: src=./node_exporter.conf dest=/etc/supervisor/conf.d/node_exporter.conf
+          owner=ubuntu group=ubuntu mode=0644
+  become: yes
+
+- name: OnRamp config file
+  copy: src=./onramp.conf dest=/etc/supervisor/conf.d/onramp.conf
           owner=ubuntu group=ubuntu mode=0644
   become: yes
 
