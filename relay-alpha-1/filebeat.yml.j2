@@ -1,0 +1,19 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/supervisor/relay-stdout-*
+    - /var/log/supervisor/supervisord.log
+
+fields:
+  project: {{project}}
+  role: {{role}}
+
+output.logstash:
+  hosts: ["10.0.13.120:5044"]
+
+setup.kibana:
+  host: "10.0.13.120:5601"
+
+xpack.security.enabled: false
+xpack.monitoring.enabled: false
