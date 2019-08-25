@@ -1,3 +1,12 @@
+# NTP
+- name: NTP time sync
+  apt:
+    name: chrony
+    update_cache: yes
+  become: yes
+  tags:
+    - ntp
+
 # geth
 - name: Copy geth executable
   copy: src={{geth_path}} dest=/home/ubuntu/geth
