@@ -1,0 +1,10 @@
+- hosts: project_eth_private_1:&role_eth
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    project: eth_private_1
+    role: eth
+  tasks:
+    - name: Deploy eth
+      import_tasks: ../ethereum_node/deploy.yml
