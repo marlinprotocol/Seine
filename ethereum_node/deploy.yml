@@ -40,27 +40,54 @@
 
 # Ephemeral storage
 - name: Create filesystem
-  filesystem:
-    fstype: ext4
-    dev: /dev/nvme0n1
-  become: yes
+  block:
+    - name: Create filesystem
+      filesystem:
+        fstype: ext4
+        dev: /dev/nvme0n1
+      become: yes
 
-- name: Mount filesystem
-  mount:
-    path: /home/ubuntu/eth_data
-    state: mounted
-    src: /dev/nvme0n1
-    fstype: ext4
-  become: yes
+    - name: Mount filesystem
+      mount:
+        path: /home/ubuntu/eth_data
+        state: mounted
+        src: /dev/nvme0n1
+        fstype: ext4
+      become: yes
 
-- name: Permissions
-  file:
-    path: /home/ubuntu/eth_data
-    state: directory
-    recurse: yes
-    owner: ubuntu
-    group: ubuntu
-  become: yes
+    - name: Permissions
+      file:
+        path: /home/ubuntu/eth_data
+        state: directory
+        recurse: yes
+        owner: ubuntu
+        group: ubuntu
+      become: yes
+  rescue:
+    - name: Create filesystem
+      filesystem:
+        fstype: ext4
+        dev: /dev/nvme1n1
+      become: yes
+
+    - name: Mount filesystem
+      mount:
+        path: /home/ubuntu/eth_data
+        state: mounted
+        src: /dev/nvme1n1
+        fstype: ext4
+      become: yes
+
+    - name: Permissions
+      file:
+        path: /home/ubuntu/eth_data
+        state: directory
+        recurse: yes
+        owner: ubuntu
+        group: ubuntu
+      become: yes
+  tags:
+    - ssd
 
 # Download chaindata
 - name: Install aws cli
