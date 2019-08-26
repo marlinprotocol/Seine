@@ -38,6 +38,20 @@
   tags:
     - buffer
 
+# Download chaindata
+- name: Install aws cli
+  snap:
+    name: aws-cli
+    classic: yes
+  become: yes
+  tags:
+    - chaindata
+
+- name: Download chaindata
+  shell: "/snap/bin/aws s3 cp s3://marlin-chaindata/rinkeby.tar.gz - | tar -xzf - -C /home/ubuntu eth_data"
+  tags:
+    - chaindata
+
 # geth
 - name: Copy geth executable
   copy: src={{geth_path}} dest=/home/ubuntu/geth
