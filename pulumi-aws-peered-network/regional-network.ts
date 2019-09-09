@@ -21,5 +21,14 @@ export class RegionalNetwork extends pulumi.ComponentResource {
         }, {
             parent: this,
         });
+
+        this.subnet = new aws.ec2.Subnet(`${name}`, {
+            cidrBlock: this.vpc.cidrBlock,
+            mapPublicIpOnLaunch: true,
+            tags: args.tags,
+            vpcId: this.vpc.id,
+        }, {
+            parent: this,
+        });
     }
 }
