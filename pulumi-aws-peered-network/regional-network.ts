@@ -3,7 +3,7 @@ import * as aws from "@pulumi/aws";
 
 interface RegionalNetworkArgs {
     vpcCidr: pulumi.Input<string>;
-    project: string;
+    tags?: pulumi.Input<{[key: string]: any}>;
 }
 
 export class RegionalNetwork extends pulumi.ComponentResource {
@@ -17,7 +17,7 @@ export class RegionalNetwork extends pulumi.ComponentResource {
         this.vpc = new aws.ec2.Vpc(`${name}`, {
             cidrBlock: args.vpcCidr,
             enableDnsHostnames: true,
-            tags: {"project": args.project},
+            tags: args.tags,
         }, {
             parent: this,
         });
