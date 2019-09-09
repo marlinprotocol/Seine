@@ -13,5 +13,13 @@ export class RegionalNetwork extends pulumi.ComponentResource {
 
     constructor(name: string, args: RegionalNetworkArgs, opts?: pulumi.ComponentResourceOptions) {
         super("marlin:AWSRegionalNetwork", name, {}, opts);
+
+        this.vpc = new aws.ec2.Vpc(`${name}`, {
+            cidrBlock: args.vpcCidr,
+            enableDnsHostnames: true,
+            tags: {"project": args.project},
+        }, {
+            parent: this,
+        });
     }
 }
