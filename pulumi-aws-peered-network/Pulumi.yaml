@@ -1,0 +1,3 @@
+name: aws-peered-network
+runtime: nodejs
+description: A peered AWS network with VPCs in the given regions
