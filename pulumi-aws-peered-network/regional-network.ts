@@ -37,5 +37,12 @@ export class RegionalNetwork extends pulumi.ComponentResource {
         }, {
             parent: this,
         });
+
+        new aws.ec2.MainRouteTableAssociation(`${name}`, {
+            routeTableId: this.routeTable.id,
+            vpcId: this.vpc.id,
+        }, {
+            parent: this,
+        });
     }
 }
