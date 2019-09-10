@@ -51,5 +51,12 @@ export class RegionalNetwork extends pulumi.ComponentResource {
         }, {
             parent: this,
         });
+
+        let ig = new aws.ec2.InternetGateway(`${name}`, {
+            tags: args.tags,
+            vpcId: this.vpc.id,
+        }, {
+            parent: this,
+        });
     }
 }
