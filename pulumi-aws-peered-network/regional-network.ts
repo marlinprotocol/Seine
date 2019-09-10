@@ -58,5 +58,13 @@ export class RegionalNetwork extends pulumi.ComponentResource {
         }, {
             parent: this,
         });
+
+        new aws.ec2.Route(`${name}-internet`, {
+            destinationCidrBlock: "0.0.0.0/0",
+            gatewayId: ig.id,
+            routeTableId: this.routeTable.id,
+        }, {
+            parent: this,
+        });
     }
 }
