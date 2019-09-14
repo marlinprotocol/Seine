@@ -10,6 +10,8 @@ interface PeeringConnectionArgs {
     dstCidr: pulumi.Input<string>;
     srcRegion: aws.Region;
     dstRegion: aws.Region;
+    srcProvider: aws.Provider;
+    dstProvider: aws.Provider;
     tags?: pulumi.Input<{[key: string]: any}>;
 }
 
@@ -25,6 +27,7 @@ export class PeeringConnection extends pulumi.ComponentResource {
             tags: args.tags,
         }, {
             parent: this,
+            provider: args.srcProvider,
         });
     }
 }
