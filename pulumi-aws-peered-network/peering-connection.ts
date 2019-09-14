@@ -17,5 +17,14 @@ export class PeeringConnection extends pulumi.ComponentResource {
 
     constructor(name: string, args: PeeringConnectionArgs, opts?: pulumi.ComponentResourceOptions) {
         super("marlin:AWSPeeringConnection", name, {}, opts);
+
+        let vpcPeeringConnection = new aws.ec2.VpcPeeringConnection(name, {
+            vpcId: args.srcVpcId,
+            peerVpcId: args.dstVpcId,
+            peerRegion: args.dstRegion,
+            tags: args.tags,
+        }, {
+            parent: this,
+        });
     }
 }
