@@ -29,5 +29,14 @@ export class PeeringConnection extends pulumi.ComponentResource {
             parent: this,
             provider: args.srcProvider,
         });
+
+        new aws.ec2.VpcPeeringConnectionAccepter(name, {
+            vpcPeeringConnectionId: vpcPeeringConnection.id,
+            autoAccept: true,
+            tags: args.tags,
+        }, {
+            parent: this,
+            provider: args.dstProvider,
+        });
     }
 }
