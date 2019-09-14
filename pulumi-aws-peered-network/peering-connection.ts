@@ -38,5 +38,23 @@ export class PeeringConnection extends pulumi.ComponentResource {
             parent: this,
             provider: args.dstProvider,
         });
+
+        new aws.ec2.Route(`${name}-s2d`, {
+            routeTableId: args.srcRouteTableId,
+            destinationCidrBlock: args.dstCidr,
+            vpcPeeringConnectionId: vpcPeeringConnection.id,
+        }, {
+            parent: this,
+            provider: args.srcProvider,
+        });
+
+        new aws.ec2.Route(`${name}-d2s`, {
+            routeTableId: args.dstRouteTableId,
+            destinationCidrBlock: args.srcCidr,
+            vpcPeeringConnectionId: vpcPeeringConnection.id,
+        }, {
+            parent: this,
+            provider: args.dstProvider,
+        });
     }
 }
