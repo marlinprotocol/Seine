@@ -21,6 +21,7 @@ export class AWSPeeredNetwork extends pulumi.ComponentResource {
     constructor(name: string, args: AWSPeeredNetworkArgs, opts?: pulumi.ComponentResourceOptions) {
         super("marlin:AWSPeeredNetwork", name, {}, opts);
 
+        this.children = {};
         for(let vpcCidr of args.vpcCidrs) {
             let rn = new RegionalNetwork(vpcCidr.name, {
                 vpcCidr: vpcCidr.cidrBlock,
