@@ -4,7 +4,14 @@ import * as awsx from "@pulumi/awsx";
 
 import { RegionalNetwork } from "./regional-network"
 
+interface IAWSNewVpcArgs {
+    name: string;
+    region: aws.Region;
+    cidrBlock: string;
+}
+
 interface AWSPeeredNetworkArgs {
+    vpcCidrs: IAWSNewVpcArgs[];
     tags?: pulumi.Input<{[key: string]: any}>;
 }
 
