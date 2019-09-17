@@ -14,6 +14,7 @@ interface IAWSNewVpcArgs {
 interface AWSPeeredNetworkArgs {
     vpcCidrs: IAWSNewVpcArgs[];
     tags?: pulumi.Input<{[key: string]: any}>;
+    providers: {[key: string]: aws.Provider};
 }
 
 export class AWSPeeredNetwork extends pulumi.ComponentResource {
@@ -30,6 +31,7 @@ export class AWSPeeredNetwork extends pulumi.ComponentResource {
                 tags: args.tags,
             }, {
                 parent: this,
+                provider: args.providers[vpcBlock.region],
             });
 
             // Peer with other rn
@@ -44,6 +46,8 @@ export class AWSPeeredNetwork extends pulumi.ComponentResource {
                     dstCidr: prn.vpc.cidrBlock,
                     srcRegion: vpcBlock.region,
                     dstRegion: peerVpcBlock.region,
+                    srcProvider: args.providers[vpcBlock.region],
+                    dstProvider: args.providers[peerVpcBlock.region],
                     tags: args.tags,
                 }, {
                     parent: this,
