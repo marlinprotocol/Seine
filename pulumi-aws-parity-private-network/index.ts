@@ -44,5 +44,30 @@ export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
         }, {
             parent: this,
         });
+
+        this.instances = {};
+        for(let key in args.subnets) {
+            let subnet = args.subnets[key];
+            let instance = pulumi.output(subnet).apply(subnet => {
+                let instance = new aws.ec2.Instance(key, {
+                    ami: "",
+                    iamInstanceProfile: ethInstanceProfile,
+                    instanceType: args.instanceType,
+                    keyName: args.keyName,
+                    rootBlockDevice: {
+                        volumeType: "gp2",
+                    },
+                    subnetId: subnet.id,
+                    tags: { ...args.tags, ...{role: "eth"} },
+                    volumeTags: { ...args.tags, ...{role: "eth"} },
+                    vpcSecurityGroupIds: [],
+                }, {
+                    parent: subnet,
+                });
+
+                return instance;
+            });
+            this.instances[key] = instance;
+        }
     }
 }
