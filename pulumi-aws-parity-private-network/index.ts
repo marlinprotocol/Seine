@@ -49,8 +49,30 @@ export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
         for(let key in args.subnets) {
             let subnet = args.subnets[key];
             let instance = pulumi.output(subnet).apply(subnet => {
+
+                let ubuntu = aws.getAmi({
+                    filters: [
+                        {
+                            name: "name",
+                            values: ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"],
+                        },
+                        {
+                            name: "root-device-type",
+                            values: ["ebs"],
+                        },
+                        {
+                            name: "virtualization-type",
+                            values: ["hvm"],
+                        },
+                    ],
+                    mostRecent: true,
+                    owners: ["099720109477"], // Canonical
+                }, {
+                    parent: subnet,
+                });
+
                 let instance = new aws.ec2.Instance(key, {
-                    ami: "",
+                    ami: ubuntu.imageId,
                     iamInstanceProfile: ethInstanceProfile,
                     instanceType: args.instanceType,
                     keyName: args.keyName,
