@@ -49,6 +49,14 @@ export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
         for(let key in args.subnets) {
             let subnet = args.subnets[key];
             let instance = pulumi.output(subnet).apply(subnet => {
+                let securityGroup = new aws.ec2.SecurityGroup(`${key}`, {
+                    vpcId: subnet.vpcId,
+                    egress: args.egress,
+                    ingress: args.ingress,
+                    tags: args.tags,
+                }, {
+                    parent: subnet,
+                })
 
                 let ubuntu = aws.getAmi({
                     filters: [
@@ -82,7 +90,7 @@ export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
                     subnetId: subnet.id,
                     tags: { ...args.tags, ...{role: "eth"} },
                     volumeTags: { ...args.tags, ...{role: "eth"} },
-                    vpcSecurityGroupIds: [],
+                    vpcSecurityGroupIds: [securityGroup.id],
                 }, {
                     parent: subnet,
                 });
