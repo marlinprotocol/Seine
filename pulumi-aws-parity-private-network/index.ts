@@ -17,5 +17,32 @@ export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
 
     constructor(name: string, args: AWSParityPrivateNetworkArgs, opts?: pulumi.ComponentResourceOptions) {
         super("marlin:AWSParityPrivateNetwork", name, {}, opts);
+
+        // IAM role
+        let ethRole = new aws.iam.Role(`${name}-eth`, {
+            assumeRolePolicy: `{
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            }`,
+            name: `${name}-eth`,
+        }, {
+            parent: this,
+        });
+
+        // IAM profile
+        let ethInstanceProfile = new aws.iam.InstanceProfile(`${name}-eth`, {
+            name: `${name}-eth`,
+            role: ethRole,
+        }, {
+            parent: this,
+        });
     }
 }
