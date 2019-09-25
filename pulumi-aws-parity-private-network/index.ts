@@ -12,6 +12,8 @@ interface AWSParityPrivateNetworkArgs {
 }
 
 export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
+    public readonly instances: {[key: string]: pulumi.Output<aws.ec2.Instance>};
+    public readonly securityGroups: {[key: string]: aws.ec2.SecurityGroup};
 
     constructor(name: string, args: AWSParityPrivateNetworkArgs, opts?: pulumi.ComponentResourceOptions) {
         super("marlin:AWSParityPrivateNetwork", name, {}, opts);
