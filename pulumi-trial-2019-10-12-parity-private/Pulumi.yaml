@@ -1,0 +1,3 @@
+name: pulumi-trial-2019-10-12-parity-private
+runtime: nodejs
+description: Trial with private parity network on AWS

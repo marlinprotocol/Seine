@@ -1,0 +1,11 @@
+{
+    "name": "pulumi-trial-2019-10-12-parity-private",
+    "devDependencies": {
+        "@types/node": "^8.0.0"
+    },
+    "dependencies": {
+        "@pulumi/pulumi": "^1.0.0",
+        "@pulumi/aws": "^1.0.0",
+        "@pulumi/awsx": "^0.18.10"
+    }
+}
