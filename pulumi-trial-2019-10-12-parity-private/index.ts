@@ -2,6 +2,8 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
+import { AWSPeeredNetwork } from "pulumi-aws-peered-network";
+
 let regions: aws.Region[] = [
     "eu-north-1",
     "ap-south-1",
@@ -34,4 +36,15 @@ regions.map((region) => {
     providers[region] = new aws.Provider(region, {
         region: region,
     });
+});
+
+let tags = {
+    managedBy: "pulumi",
+    project: "parity_private_v1",
+};
+
+let peeredNetwork = new AWSPeeredNetwork("parity-private", {
+    vpcCidrs: vpcCidrs,
+    tags: tags,
+    providers: providers,
 });
