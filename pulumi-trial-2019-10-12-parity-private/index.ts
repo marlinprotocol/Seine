@@ -20,3 +20,11 @@ let regions: aws.Region[] = [
 	"us-west-1",
 	"us-west-2",
 ];
+
+let vpcCidrs = regions.map((region, idx) => {
+	return {
+		name: region,
+		region: region,
+		cidrBlock: `192.168.16.${idx * 16}/28`,
+	}
+});
