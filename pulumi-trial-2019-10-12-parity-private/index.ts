@@ -3,6 +3,7 @@ import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
 import { AWSPeeredNetwork } from "pulumi-aws-peered-network";
+import { AWSParityPrivateNetwork } from "pulumi-aws-parity-private-network";
 
 let regions: aws.Region[] = [
     "eu-north-1",
@@ -52,4 +53,28 @@ let peeredNetwork = new AWSPeeredNetwork("parity-private", {
 let subnets: {[key: string]: pulumi.Input<aws.ec2.Subnet>} = {};
 Object.keys(peeredNetwork.children).map((name) => {
     subnets[name] = peeredNetwork.children[name].subnet;
+});
+
+let ethNet = new AWSParityPrivateNetwork("parity-private", {
+    subnets: subnets,
+    instanceType: "c5d.large",
+    keyName: "ltcdemo",
+    egress: [{
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["0.0.0.0/0"],
+        protocol: "-1",
+    }],
+    ingress: [{
+        fromPort: 22,
+        toPort: 22,
+        cidrBlocks: ["0.0.0.0/0"],
+        protocol: "tcp",
+    }, {
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["192.168.16.0/24"],
+        protocol: "-1",
+    }],
+    tags: tags,
 });
