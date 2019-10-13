@@ -78,3 +78,5 @@ let ethNet = new AWSParityPrivateNetwork("parity-private", {
     }],
     tags: tags,
 });
+
+export let ethIps = Object.values(ethNet.instances).map((i) => { return i.apply((i) => { return i.publicIp }) });
