@@ -48,3 +48,8 @@ let peeredNetwork = new AWSPeeredNetwork("parity-private", {
     tags: tags,
     providers: providers,
 });
+
+let subnets: {[key: string]: pulumi.Input<aws.ec2.Subnet>} = {};
+Object.keys(peeredNetwork.children).map((name) => {
+    subnets[name] = peeredNetwork.children[name].subnet;
+});
