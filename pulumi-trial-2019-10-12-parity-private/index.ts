@@ -104,3 +104,5 @@ let relayNet = new AWSMarlinRelayNetwork("parity-private", {
     }],
     tags: tags,
 });
+
+export let relayIps = Object.values(relayNet.instances).map((i) => { return i.apply((i) => { return i.publicIp }) });
