@@ -80,3 +80,27 @@ let ethNet = new AWSParityPrivateNetwork("parity-private", {
 });
 
 export let ethIps = Object.values(ethNet.instances).map((i) => { return i.apply((i) => { return i.publicIp }) });
+
+let relayNet = new AWSMarlinRelayNetwork("parity-private", {
+    subnets: subnets,
+    instanceType: "c5.large",
+    keyName: "ltcdemo",
+    egress: [{
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["0.0.0.0/0"],
+        protocol: "-1",
+    }],
+    ingress: [{
+        fromPort: 22,
+        toPort: 22,
+        cidrBlocks: ["0.0.0.0/0"],
+        protocol: "tcp",
+    }, {
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["192.168.16.0/24"],
+        protocol: "-1",
+    }],
+    tags: tags,
+});
