@@ -4,6 +4,8 @@ import * as awsx from "@pulumi/awsx";
 
 import { AWSPeeredNetwork } from "pulumi-aws-peered-network";
 import { AWSParityPrivateNetwork } from "pulumi-aws-parity-private-network";
+import { AWSMarlinRelayNetwork } from "./relay"
+import { AWSMarlinBeacon } from "./beacon"
 
 let regions: aws.Region[] = [
     "eu-north-1",
