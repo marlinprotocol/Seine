@@ -130,3 +130,5 @@ let beaconNet = new AWSMarlinBeacon("parity-private", {
     }],
     tags: tags,
 });
+
+export let beaconIps = Object.values(beaconNet.instances).map((i) => { return i.apply((i) => { return i.publicIp }) });
