@@ -2,7 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
-interface AWSParityPrivateNetworkArgs {
+interface AWSMarlinBeaconArgs {
     subnets: {[key: string]: pulumi.Input<aws.ec2.Subnet>};
     instanceType: pulumi.Input<aws.ec2.InstanceType>;
     keyName: pulumi.Input<string>;
@@ -11,15 +11,15 @@ interface AWSParityPrivateNetworkArgs {
     tags?: pulumi.Input<{[key: string]: any}>;
 }
 
-export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
+export class AWSMarlinBeacon extends pulumi.ComponentResource {
     public readonly instances: {[key: string]: pulumi.Output<aws.ec2.Instance>};
     public readonly securityGroups: {[key: string]: aws.ec2.SecurityGroup};
 
-    constructor(name: string, args: AWSParityPrivateNetworkArgs, opts?: pulumi.ComponentResourceOptions) {
-        super("marlin:AWSParityPrivateNetwork", name, {}, opts);
+    constructor(name: string, args: AWSMarlinBeaconArgs, opts?: pulumi.ComponentResourceOptions) {
+        super("marlin:AWSMarlinBeacon", name, {}, opts);
 
         // IAM role
-        let ethRole = new aws.iam.Role(`${name}-eth`, {
+        let beaconRole = new aws.iam.Role(`${name}-beacon`, {
             assumeRolePolicy: `{
               "Version": "2012-10-17",
               "Statement": [
@@ -32,24 +32,25 @@ export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
                 }
               ]
             }`,
-            name: `${name}-eth`,
+            name: `${name}-beacon`,
         }, {
             parent: this,
         });
 
         // IAM profile
-        let ethInstanceProfile = new aws.iam.InstanceProfile(`${name}-eth`, {
-            name: `${name}-eth`,
-            role: ethRole,
+        let beaconInstanceProfile = new aws.iam.InstanceProfile(`${name}-beacon`, {
+            name: `${name}-beacon`,
+            role: beaconRole,
         }, {
             parent: this,
         });
 
+        this.securityGroups = {};
         this.instances = {};
         for(let key in args.subnets) {
             let subnet = args.subnets[key];
             let instance = pulumi.output(subnet).apply(subnet => {
-                let securityGroup = new aws.ec2.SecurityGroup(`${key}`, {
+                let securityGroup = new aws.ec2.SecurityGroup(`${key}-beacon`, {
                     vpcId: subnet.vpcId,
                     egress: args.egress,
                     ingress: args.ingress,
@@ -79,17 +80,17 @@ export class AWSParityPrivateNetwork extends pulumi.ComponentResource {
                     parent: subnet,
                 });
 
-                let instance = new aws.ec2.Instance(key, {
+                let instance = new aws.ec2.Instance(`${key}-beacon`, {
                     ami: ubuntu.imageId,
-                    iamInstanceProfile: ethInstanceProfile,
+                    iamInstanceProfile: beaconInstanceProfile,
                     instanceType: args.instanceType,
                     keyName: args.keyName,
                     rootBlockDevice: {
                         volumeType: "gp2",
                     },
                     subnetId: subnet.id,
-                    tags: { ...args.tags, ...{role: "eth"} },
-                    volumeTags: { ...args.tags, ...{role: "eth"} },
+                    tags: { ...args.tags, ...{role: "beacon"} },
+                    volumeTags: { ...args.tags, ...{role: "beacon"} },
                     vpcSecurityGroupIds: [securityGroup.id],
                 }, {
                     parent: subnet,
