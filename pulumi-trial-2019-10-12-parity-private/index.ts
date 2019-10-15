@@ -106,3 +106,27 @@ let relayNet = new AWSMarlinRelayNetwork("parity-private", {
 });
 
 export let relayIps = Object.values(relayNet.instances).map((i) => { return i.apply((i) => { return i.publicIp }) });
+
+let beaconNet = new AWSMarlinBeacon("parity-private", {
+    subnets: {'us-east-2': peeredNetwork.children['us-east-2'].subnet},
+    instanceType: "t3.small",
+    keyName: "ltcdemo",
+    egress: [{
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["0.0.0.0/0"],
+        protocol: "-1",
+    }],
+    ingress: [{
+        fromPort: 22,
+        toPort: 22,
+        cidrBlocks: ["0.0.0.0/0"],
+        protocol: "tcp",
+    }, {
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["192.168.16.0/24"],
+        protocol: "-1",
+    }],
+    tags: tags,
+});
