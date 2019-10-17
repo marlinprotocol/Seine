@@ -1,0 +1,128 @@
+- hosts: project_parity_private_1:&role_relay
+  remote_user: ubuntu
+  gather_facts: yes
+  strategy: free
+  vars:
+    project: parity_private_1
+    role: relay
+  tasks:
+    # NTP
+    - name: NTP time sync
+      apt:
+        name: chrony
+        update_cache: yes
+      become: yes
+      tags:
+        - ntp
+
+    # Buffer sizes
+    - name: Set udp memory
+      shell: sudo echo -e "26214400\t26214400\t26214400" > /proc/sys/net/ipv4/udp_mem
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set read memory max
+      shell: sysctl -w net.core.rmem_max=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set write memory max
+      shell: sysctl -w net.core.wmem_max=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set read memory default
+      shell: sysctl -w net.core.rmem_default=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set write memory default
+      shell: sysctl -w net.core.wmem_default=26214400
+      become: yes
+      tags:
+        - buffer
+
+    # Relay
+    - name: Copy relay executable
+      copy: src={{relay_path}} dest=/home/ubuntu/relay
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - relay
+
+    # Node exporter
+    # - name: Copy node exporter executable
+    #   copy: src={{node_exporter_path}} dest=/home/ubuntu/node_exporter
+    #           owner=ubuntu group=ubuntu mode=0744
+
+    # Supervisor
+    - name: Install supervisor
+      apt:
+        name: supervisor
+        update_cache: yes
+      become: yes
+
+    - name: Relay config file
+      copy: src=./relay.conf dest=/etc/supervisor/conf.d/relay.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+
+    # - name: Node exporter config file
+    #   copy: src=./node_exporter.conf dest=/etc/supervisor/conf.d/node_exporter.conf
+    #           owner=ubuntu group=ubuntu mode=0644
+    #   become: yes
+
+    - name: Reload supervisor config
+      supervisorctl:
+        name: relay
+        state: present
+      become: yes
+
+    - name: Restart relay
+      supervisorctl:
+        name: relay
+        state: restarted
+      become: yes
+      tags:
+        - relay
+
+    # # Filebeat
+    # - name: Add signing key
+    #   shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Add apt repo
+    #   shell: echo "deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list; sudo apt update -y
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Install filebeat
+    #   apt:
+    #     name: filebeat
+    #     update_cache: yes
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Filebeat config
+    #   template:
+    #     src: ./filebeat.yml.j2
+    #     dest: /etc/filebeat/filebeat.yml
+    #     owner: root
+    #     group: root
+    #     mode: 0744
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Start filebeat
+    #   command: service filebeat restart
+    #   become: yes
+    #   tags:
+    #     - filebeat
