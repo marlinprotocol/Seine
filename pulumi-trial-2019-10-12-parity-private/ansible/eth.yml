@@ -1,0 +1,8 @@
+# NTP
+- name: NTP time sync
+  apt:
+    name: chrony
+    update_cache: yes
+  become: yes
+  tags:
+    - ntp
