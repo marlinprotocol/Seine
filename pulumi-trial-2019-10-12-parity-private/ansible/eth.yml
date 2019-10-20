@@ -6,3 +6,34 @@
   become: yes
   tags:
     - ntp
+
+# Buffer sizes
+- name: Set udp memory
+  shell: sudo echo -e "26214400\t26214400\t26214400" > /proc/sys/net/ipv4/udp_mem
+  become: yes
+  tags:
+    - buffer
+
+- name: Set read memory max
+  shell: sysctl -w net.core.rmem_max=26214400
+  become: yes
+  tags:
+    - buffer
+
+- name: Set write memory max
+  shell: sysctl -w net.core.wmem_max=26214400
+  become: yes
+  tags:
+    - buffer
+
+- name: Set read memory default
+  shell: sysctl -w net.core.rmem_default=26214400
+  become: yes
+  tags:
+    - buffer
+
+- name: Set write memory default
+  shell: sysctl -w net.core.wmem_default=26214400
+  become: yes
+  tags:
+    - buffer
