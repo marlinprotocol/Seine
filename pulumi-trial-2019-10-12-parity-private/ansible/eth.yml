@@ -88,3 +88,16 @@
       become: yes
   tags:
     - ssd
+
+# Supervisor
+- name: Install supervisor
+  apt:
+    name: supervisor
+    update_cache: yes
+  become: yes
+
+- name: Reload supervisor config
+  command: supervisorctl reload
+  become: yes
+  tags:
+    - config
