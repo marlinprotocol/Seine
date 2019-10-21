@@ -1,0 +1,10 @@
+- hosts: project_parity_private_1:&role_eth
+  remote_user: ubuntu
+  gather_facts: yes
+  strategy: free
+  vars:
+    project: parity_private_1
+    role: eth
+  tasks:
+    - name: Deploy eth
+      import_tasks: ./eth.yml
