@@ -96,12 +96,25 @@
   tags:
     - parity
 
+- name: Copy parity executable
+  copy: src={{parity_path}} dest=/home/ubuntu/parity
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - parity
+
 # Supervisor
 - name: Install supervisor
   apt:
     name: supervisor
     update_cache: yes
   become: yes
+
+- name: Parity config file
+  copy: src=./parity.conf dest=/etc/supervisor/conf.d/parity.conf
+          owner=ubuntu group=ubuntu mode=0644
+  become: yes
+  tags:
+    - config
 
 - name: Reload supervisor config
   command: supervisorctl reload
