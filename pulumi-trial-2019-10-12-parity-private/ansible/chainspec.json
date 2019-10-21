@@ -1,0 +1,58 @@
+{
+    "name": "PoA",
+    "engine": {
+        "authorityRound": {
+            "params": {
+                "stepDuration": "3",
+                "validators" : {
+                    "list": [
+                        "0x0068e6c983f7974460d3c56391deece26a8c6541",
+                        "0x00f34c2148f571c9fcc764cb3cb7040812147b24",
+                        "0x00186f6669e6ec343788840bbb54736d1067f5f6",
+                        "0x0082ea82e669bc47cb06385fc80858ce77b8dc67",
+                        "0x0038d1b50f0c559a59e21aa785fae43425280fd5",
+                        "0x00803df06c3dff101a5b977d4c6a5b1bf022dd64",
+                        "0x00972421cc45148103d15a959b2f21b690a94e41",
+                        "0x00d4551092ffeec90b38a5ccf0a83c14e9333c2e",
+                        "0x00487c542bf73cd15b6fd36b5de2412ae45c5cf5",
+                        "0x00dfab0c0cdc9b12cb226e7e9fde6a0456a916f0",
+                        "0x00c10cdbf999a363e0dd0d74e3c26783518ce0d7",
+                        "0x00d14735221091a69739f902d93e430a8795d20d",
+                        "0x0083f57637cf95b49014d610fa718f00b3d10fc5",
+                        "0x0016ea72d3555c99e5fbcdda69843683f884fb60",
+                        "0x00b7b9a168bce7d78be0086ffc2258d56ea71a14",
+                        "0x004ca3a715e94c7049df97f844b36f3cecac0566"
+                    ]
+                }
+            }
+        }
+    },
+    "params": {
+        "gasLimitBoundDivisor": "0x400",
+        "maximumExtraDataSize": "0x20",
+        "minGasLimit": "0x0",
+        "networkID" : "0x2615",
+        "eip155Transition": 0,
+        "validateChainIdTransition": 0,
+        "eip140Transition": 0,
+        "eip211Transition": 0,
+        "eip214Transition": 0,
+        "eip658Transition": 0
+    },
+    "genesis": {
+        "seal": {
+            "authorityRound": {
+                "step": "0x0",
+                "signature": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+            }
+        },
+        "difficulty": "0x20000",
+        "gasLimit": "0x2625A00"
+    },
+    "accounts": {
+        "0x0000000000000000000000000000000000000001": { "balance": "1", "builtin": { "name": "ecrecover", "pricing": { "linear": { "base": 3000, "word": 0 } } } },
+        "0x0000000000000000000000000000000000000002": { "balance": "1", "builtin": { "name": "sha256", "pricing": { "linear": { "base": 60, "word": 12 } } } },
+        "0x0000000000000000000000000000000000000003": { "balance": "1", "builtin": { "name": "ripemd160", "pricing": { "linear": { "base": 600, "word": 120 } } } },
+        "0x0000000000000000000000000000000000000004": { "balance": "1", "builtin": { "name": "identity", "pricing": { "linear": { "base": 15, "word": 3 } } } }
+    }
+}
