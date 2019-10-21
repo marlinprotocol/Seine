@@ -89,6 +89,13 @@
   tags:
     - ssd
 
+# Parity
+- name: Copy pwd file
+  copy: src=./node.pwds dest=/home/ubuntu/node.pwds
+          owner=ubuntu group=ubuntu mode=0644
+  tags:
+    - parity
+
 # Supervisor
 - name: Install supervisor
   apt:
