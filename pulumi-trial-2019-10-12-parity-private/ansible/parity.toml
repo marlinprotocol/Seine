@@ -1,0 +1,24 @@
+[parity]
+chain = "./chainspec.json"
+base_path = "./eth_data"
+
+[network]
+port = 30300
+
+[rpc]
+port = 8540
+apis = ["web3", "eth", "net", "personal", "parity", "parity_set", "traces", "rpc", "parity_accounts"]
+
+[footprint]
+num_verifiers = 8
+
+[websockets]
+port = 8450
+
+[account]
+password = ["node.pwds"]
+
+[mining]
+reseal_on_txs = "none"
+usd_per_tx = "0"
+gas_floor_target = "40000000"
