@@ -115,6 +115,13 @@
   tags:
     - onramp
 
+# txgen
+- name: Copy txgen executable
+  copy: src={{txgen_path}} dest=/home/ubuntu/txgen
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - txgen
+
 # Supervisor
 - name: Install supervisor
   apt:
@@ -131,6 +138,13 @@
 
 - name: OnRamp config file
   copy: src=./onramp.conf dest=/etc/supervisor/conf.d/onramp.conf
+          owner=ubuntu group=ubuntu mode=0644
+  become: yes
+  tags:
+    - config
+
+- name: TxGen config file
+  copy: src=./txgen.conf dest=/etc/supervisor/conf.d/txgen.conf
           owner=ubuntu group=ubuntu mode=0644
   become: yes
   tags:
