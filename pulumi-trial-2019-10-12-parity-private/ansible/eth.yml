@@ -102,6 +102,19 @@
   tags:
     - parity
 
+# onramp
+- name: Copy onramp executable
+  copy: src={{onramp_path}} dest=/home/ubuntu/onramp
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - onramp
+
+- name: Copy key
+  copy: src={{onramp_key_path}} dest=/home/ubuntu/pkey.ec.der
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - onramp
+
 # Supervisor
 - name: Install supervisor
   apt:
@@ -111,6 +124,13 @@
 
 - name: Parity config file
   copy: src=./parity.conf dest=/etc/supervisor/conf.d/parity.conf
+          owner=ubuntu group=ubuntu mode=0644
+  become: yes
+  tags:
+    - config
+
+- name: OnRamp config file
+  copy: src=./onramp.conf dest=/etc/supervisor/conf.d/onramp.conf
           owner=ubuntu group=ubuntu mode=0644
   become: yes
   tags:
