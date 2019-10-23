@@ -102,6 +102,12 @@
   tags:
     - parity
 
+- name: Copy config file
+  copy: src=./parity.toml dest=/home/ubuntu/parity.toml
+          owner=ubuntu group=ubuntu mode=0644
+  tags:
+    - parity
+
 - name: Copy pwd file
   copy: src=./node.pwds dest=/home/ubuntu/node.pwds
           owner=ubuntu group=ubuntu mode=0644
