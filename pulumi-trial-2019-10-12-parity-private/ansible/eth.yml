@@ -96,6 +96,12 @@
   tags:
     - nuke
 
+- name: Copy chain spec
+  copy: src=./chainspec.json dest=/home/ubuntu/chainspec.json
+          owner=ubuntu group=ubuntu mode=0644
+  tags:
+    - parity
+
 - name: Copy pwd file
   copy: src=./node.pwds dest=/home/ubuntu/node.pwds
           owner=ubuntu group=ubuntu mode=0644
