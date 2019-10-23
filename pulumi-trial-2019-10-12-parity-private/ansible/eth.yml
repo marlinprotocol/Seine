@@ -183,3 +183,27 @@
   become: yes
   tags:
     - config
+
+- name: Restart onramp
+  supervisorctl:
+    name: onramp
+    state: restarted
+  become: yes
+  tags:
+    - onramp
+
+- name: Restart txgen
+  supervisorctl:
+    name: txgen
+    state: restarted
+  become: yes
+  tags:
+    - txgen
+
+- name: Restart parity
+  supervisorctl:
+    name: parity
+    state: restarted
+  become: yes
+  tags:
+    - parity
