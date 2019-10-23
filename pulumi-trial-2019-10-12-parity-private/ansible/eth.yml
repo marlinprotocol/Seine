@@ -90,6 +90,12 @@
     - ssd
 
 # Parity
+- name: Nuke the chain
+  shell: supervisorctl stop parity && supervisorctl stop txgen && rm -rf ./eth_data/* && rm -rf /etc/supervisor/conf.d/parity.conf
+  become: yes
+  tags:
+    - nuke
+
 - name: Copy pwd file
   copy: src=./node.pwds dest=/home/ubuntu/node.pwds
           owner=ubuntu group=ubuntu mode=0644
