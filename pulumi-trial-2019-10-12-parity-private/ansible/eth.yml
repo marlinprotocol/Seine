@@ -207,3 +207,23 @@
   become: yes
   tags:
     - parity
+
+- name: Add signer account
+  shell: "curl --data '{\"jsonrpc\":\"2.0\",\"method\":\"parity_newAccountFromPhrase\",\"params\":[\"{{ inventory_hostname }}\", \"{{ inventory_hostname }}\"],\"id\":0}' -H \"Content-Type: application/json\" -X POST localhost:8540 | egrep -o '0x[0-9a-f]+'"
+  register: signer
+  tags:
+    - signer
+
+- debug: msg="{{signer.stdout}}"
+  tags:
+    - signer
+
+- name: Activate signer
+  shell: "curl --data '{\"method\":\"parity_setEngineSigner\",\"params\":[\"{{ signer.stdout }}\",\"{{ inventory_hostname }}\"],\"id\":1,\"jsonrpc\":\"2.0\"}' -H \"Content-Type: application/json\" -X POST localhost:8540"
+  register: activateSigner
+  tags:
+    - signer
+
+- debug: msg="{{activateSigner.stdout}}"
+  tags:
+    - signer
