@@ -120,6 +120,16 @@
   tags:
     - parity
 
+- name: Add enode
+  shell: "curl --data '{\"jsonrpc\":\"2.0\",\"method\":\"parity_addReservedPeer\",\"params\":[\"enode://5c9b1467e8a7ee4e370eb6d38b6d1023bc81df806bcd9200830482255a06122d882505fa2f4fe2105cac983686619cefda5139d60a38537b7429343320dc836f@127.0.0.1:9000\"],\"id\":0}' -H \"Content-Type: application/json\" -X POST localhost:8540"
+  tags:
+    - enode
+
+- name: Add enode
+  shell: "curl --data '{\"jsonrpc\":\"2.0\",\"method\":\"parity_addReservedPeer\",\"params\":[\"enode://49d7ed7966db894778923abd0171b19e90808568fd83a53ed05d15334fe837c66b3a680a7ad2c77090c64e097a57a888f03ed3ffe8fabbbfa10c1d55f0b9c06d@192.168.16.205:30300\"],\"id\":0}' -H \"Content-Type: application/json\" -X POST localhost:8540"
+  tags:
+    - enode
+
 # onramp
 - name: Copy onramp executable
   copy: src={{onramp_path}} dest=/home/ubuntu/onramp
