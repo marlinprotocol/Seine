@@ -1,0 +1,3 @@
+name: global-network
+runtime: nodejs
+description: Provision a global network on GCP
