@@ -13,5 +13,12 @@ export class GCPGlobalNetwork extends pulumi.ComponentResource {
 
     constructor(name: string, args: GCPGlobalNetworkArgs, opts?: pulumi.ComponentResourceOptions) {
         super("marlin:GCP:GlobalNetwork", name, {}, opts);
+
+        this.network = new gcp.compute.Network(name, {
+            autoCreateSubnetworks: false,
+            routingMode: "GLOBAL",
+        }, {
+            parent: this,
+        });
     }
 }
