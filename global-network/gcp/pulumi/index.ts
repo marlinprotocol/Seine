@@ -42,4 +42,15 @@ export class GCPGlobalNetwork extends pulumi.ComponentResource {
             });
         }
     }
+
+    static generateSSHFirewall(): Omit<gcp.compute.FirewallArgs, "network"> {
+        return {
+            direction: "INGRESS",
+            allows: [{
+                protocol: "tcp",
+                ports: ["22"],
+            }],
+            sourceRanges: ["0.0.0.0/0"],
+        };
+    }
 }
