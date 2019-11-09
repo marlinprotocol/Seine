@@ -31,5 +31,15 @@ export class GCPGlobalNetwork extends pulumi.ComponentResource {
                 parent: this,
             });
         }
+
+        this.firewalls = {};
+        for (let firewallName in args.firewalls) {
+            this.firewalls[firewallName] = new gcp.compute.Firewall(`${name}-${firewallName}`, {
+                network: this.network.name,
+                ...args.firewalls[firewallName],
+            }, {
+                parent: this.network,
+            });
+        }
     }
 }
