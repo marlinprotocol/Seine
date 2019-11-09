@@ -53,4 +53,18 @@ export class GCPGlobalNetwork extends pulumi.ComponentResource {
             sourceRanges: ["0.0.0.0/0"],
         };
     }
+
+    static generateEgressFirewall(): Omit<gcp.compute.FirewallArgs, "network"> {
+        return {
+            direction: "EGRESS",
+            allows: [{
+                protocol: "tcp",
+                ports: ["0-65535"],
+            }, {
+                protocol: "udp",
+                ports: ["0-65535"],
+            }],
+            destinationRanges: ["0.0.0.0/0"],
+        };
+    }
 }
