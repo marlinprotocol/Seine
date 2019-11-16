@@ -24,3 +24,11 @@ let regions: string[] = [
     "us-west1",
     "us-west2",
 ];
+
+let subnets: {[key: string]: {region: string, cidr: string}} = {};
+regions.map((region, idx) => {
+    subnets[region] = {
+        region: region,
+        cidr: `192.168.${idx}.0/24`,
+    }
+});
