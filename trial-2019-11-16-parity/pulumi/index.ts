@@ -1,6 +1,8 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
+import { GCPGlobalNetwork } from "@marlinlabs/pulumi-gcp-global-network"
+
 let labels = {
     "project": "trial-2019-11-16",
     "managed_by": "pulumi",
@@ -30,5 +32,24 @@ regions.map((region, idx) => {
     subnets[region] = {
         region: region,
         cidr: `192.168.${idx}.0/24`,
+    }
+});
+
+let globalNetwork = new GCPGlobalNetwork("globalnet", {
+    subnets: subnets,
+    firewalls: {
+        "ssh": GCPGlobalNetwork.generateSSHFirewall(),
+        "egress": GCPGlobalNetwork.generateEgressFirewall(),
+        "internal": {
+            direction: "INGRESS",
+            allows: [{
+                protocol: "tcp",
+                ports: ["0-65535"],
+            }, {
+                protocol: "udp",
+                ports: ["0-65535"],
+            }],
+            sourceRanges: ["192.168.0.0/20"],
+        },
     }
 });
