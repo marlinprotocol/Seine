@@ -3,6 +3,10 @@ import * as gcp from "@pulumi/gcp";
 
 interface GCPInstancesArgs {
     subnets: {[key: string]: pulumi.Input<gcp.compute.Subnetwork>};
+    instanceType: string;
+    preemptible?: boolean;
+    localssd?: boolean;
+    networkTags?: pulumi.Input<pulumi.Input<string>[]>;
     labels?: pulumi.Input<{[key: string]: any}>;
 }
 
@@ -27,15 +31,19 @@ export class GCPInstances extends pulumi.ComponentResource {
                         }
                     },
                     labels: args.labels,
-                    machineType: "",
+                    machineType: args.instanceType,
                     networkInterfaces: [{
                         accessConfigs: [{}],
                         subnetwork: subnet.name,
                     }],
-                    scheduling: [{
+                    scheduling: args.preemptible ? {
+                        automaticRestart: false,
+                        preemptible: true,
+                    } : undefined,
+                    scratchDisks: args.localssd ? [{
                         interface: "NVME",
-                    }],
-                    tags: [],
+                    }] : undefined,
+                    tags: args.networkTags,
                     zone: subnet.region.apply(region => { return `${region}-c`; }),
                 }, {
                     parent: subnet,
