@@ -82,3 +82,11 @@ let relayers = new GCPInstances("relay", {
         "role": "relay",
     },
 });
+
+export let relayIps = Object.values(relayers.instances).map((i) => {
+    return i.apply((i) => {
+        return i.networkInterfaces.apply((i) => {
+            return i[0].networkIp;
+        });
+    });
+});
