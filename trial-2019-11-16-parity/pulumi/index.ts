@@ -2,6 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
 import { GCPGlobalNetwork } from "@marlinlabs/pulumi-gcp-global-network"
+import { GCPInstances } from "./instances"
 
 let labels = {
     "project": "trial-2019-11-16",
@@ -52,4 +53,15 @@ let globalNetwork = new GCPGlobalNetwork("globalnet", {
             sourceRanges: ["192.168.0.0/20"],
         },
     }
+});
+
+let beacons = new GCPInstances("beacon", {
+    subnets: {"us-west1": globalNetwork.subnets["us-west1"]},
+    instanceType: "g1-small",
+    count: 1,
+    networkTags: ["beacon"],
+    labels: {
+        ...labels,
+        "role": "beacon",
+    },
 });
