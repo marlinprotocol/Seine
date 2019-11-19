@@ -71,3 +71,14 @@ export let beaconIp = beacons.instances["us-west1-beacon-1"].apply((i) => {
         return i[0].networkIp;
     });
 });
+
+let relayers = new GCPInstances("relay", {
+    subnets: globalNetwork.subnets,
+    instanceType: "n1-standard-1",
+    count: 1,
+    networkTags: ["relay"],
+    labels: {
+        ...labels,
+        "role": "relay",
+    },
+});
