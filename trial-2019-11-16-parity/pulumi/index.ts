@@ -65,3 +65,9 @@ let beacons = new GCPInstances("beacon", {
         "role": "beacon",
     },
 });
+
+export let beaconIp = beacons.instances["us-west1-beacon-1"].apply((i) => {
+    return i.networkInterfaces.apply((i) => {
+        return i[0].networkIp;
+    });
+});
