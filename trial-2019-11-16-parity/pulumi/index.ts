@@ -90,3 +90,16 @@ export let relayIps = Object.values(relayers.instances).map((i) => {
         });
     });
 });
+
+let eth = new GCPInstances("eth", {
+    subnets: globalNetwork.subnets,
+    instanceType: "n1-standard-2",
+    count: 1,
+    preemptible: true,
+    localssd: true,
+    networkTags: ["eth"],
+    labels: {
+        ...labels,
+        "role": "eth",
+    },
+});
