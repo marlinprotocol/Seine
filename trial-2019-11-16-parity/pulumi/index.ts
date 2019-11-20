@@ -122,3 +122,9 @@ let monitoring = new GCPInstances("monitoring", {
         "role": "monitoring",
     },
 });
+
+export let monitoringIp = monitoring.instances["us-west1-monitoring-1"].apply((i) => {
+    return i.networkInterfaces.apply((i) => {
+        return i[0].networkIp;
+    });
+});
