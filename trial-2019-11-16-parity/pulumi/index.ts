@@ -52,6 +52,15 @@ let globalNetwork = new GCPGlobalNetwork("globalnet", {
             }],
             sourceRanges: ["192.168.0.0/20"],
         },
+        "www": {
+            direction: "INGRESS",
+            allows: [{
+                protocol: "tcp",
+                ports: ["80", "443"],
+            }],
+            sourceRanges: ["0.0.0.0/0"],
+            targetTags: ["monitoring"],
+        },
     }
 });
 
