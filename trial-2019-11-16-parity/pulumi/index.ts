@@ -111,3 +111,14 @@ export let ethIps = Object.values(eth.instances).map((i) => {
         });
     });
 });
+
+let monitoring = new GCPInstances("monitoring", {
+    subnets: {"us-west1": globalNetwork.subnets["us-west1"]},
+    instanceType: "n1-standard-2",
+    count: 1,
+    networkTags: ["monitoring"],
+    labels: {
+        ...labels,
+        "role": "monitoring",
+    },
+});
