@@ -103,3 +103,11 @@ let eth = new GCPInstances("eth", {
         "role": "eth",
     },
 });
+
+export let ethIps = Object.values(eth.instances).map((i) => {
+    return i.apply((i) => {
+        return i.networkInterfaces.apply((i) => {
+            return i[0].networkIp;
+        });
+    });
+});
