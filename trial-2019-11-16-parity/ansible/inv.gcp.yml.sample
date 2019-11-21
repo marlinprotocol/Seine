@@ -1,0 +1,9 @@
+plugin: gcp_compute
+projects:
+  - <hidden>
+auth_kind: serviceaccount
+keyed_groups:
+  - prefix: gcp
+    key: labels
+filters:
+  - labels.project=<hidden>
