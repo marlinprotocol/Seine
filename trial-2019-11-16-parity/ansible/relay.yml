@@ -1,0 +1,124 @@
+- hosts: gcp_role_relay
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: relay
+  tasks:
+    # NTP
+    - name: NTP time sync
+      apt:
+        name: chrony
+        update_cache: yes
+      become: yes
+      tags:
+        - ntp
+
+    # Buffer sizes
+    - name: Set udp memory
+      shell: sudo echo -e "26214400\t26214400\t26214400" > /proc/sys/net/ipv4/udp_mem
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set read memory max
+      shell: sysctl -w net.core.rmem_max=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set write memory max
+      shell: sysctl -w net.core.wmem_max=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set read memory default
+      shell: sysctl -w net.core.rmem_default=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set write memory default
+      shell: sysctl -w net.core.wmem_default=26214400
+      become: yes
+      tags:
+        - buffer
+
+    # Relay
+    - name: Copy relay executable
+      copy: src={{relay_path}} dest=/home/ubuntu/relay
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - relay
+
+    - name: Restart relay
+      supervisorctl:
+        name: relay
+        state: restarted
+      become: yes
+      tags:
+        - relay
+
+    # Supervisor
+    - name: Install supervisor
+      apt:
+        name: supervisor
+        update_cache: yes
+      become: yes
+
+    - name: Relay config file
+      copy: src=./relay.conf dest=/etc/supervisor/conf.d/relay.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - config
+
+    - name: Reload supervisor config
+      command: supervisorctl reload
+      become: yes
+      tags:
+        - config
+
+    # Filebeat
+    - name: Add filebeat apt key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+      become: yes
+      tags:
+        - filebeat
+
+    - name: Add filebeat apt repo
+      apt_repository:
+        repo: deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main
+        state: present
+        filename: elastic-7.x
+      become: yes
+      tags:
+        - filebeat
+
+    - name: Install filebeat
+      apt:
+        name: filebeat
+        update_cache: yes
+      become: yes
+      tags:
+        - filebeat
+
+    - name: Filebeat config
+      copy:
+        src: ./filebeat.yml
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: 0644
+      become: yes
+      tags:
+        - filebeat
+
+    - name: Start filebeat
+      shell: service filebeat restart
+      become: yes
+      tags:
+        - filebeat
