@@ -1,0 +1,56 @@
+{
+    "name": "PoA",
+    "engine": {
+        "authorityRound": {
+            "params": {
+                "stepDuration": "3",
+                "validators" : {
+                    "list": [
+                        "0x00a17b35ccda5be3c6d1532fd7de1d63e405fc93",
+                        "0x007d4d0c555efa9817b33c78e7aecacc3ab261ed",
+                        "0x00d35b204d9a1207cc5ee53da6ffd34a0e137832",
+                        "0x0075e7e9d7a591230ffeb280f48214dc1e61c50c",
+                        "0x003213a3ca549ed0da47e2b6534ce598e772bebe",
+                        "0x008f25d26a062ee47969154ab80d999cdb45abd9",
+                        "0x00b278191fb52b39cab879c6eb8106cdf63cc9f5",
+                        "0x0016455719e13ad3e7789d5a0a3d080141e14ea5",
+                        "0x003a00489dff9cdfc3d35c1ce19b94454536f274",
+                        "0x000828555b5b72d95234e354a4fa4142b01e1f8c",
+                        "0x003290ec384800e2cae3be7c0cb69cc9e484f3fe",
+                        "0x00cd08b81662935e9b7a9baa512e4ea17b4511de",
+                        "0x00bb345fe8563c43191af40461d92d4567feeb92",
+                        "0x0085bc9e62c1f452f416dfafc047b14113005733"
+                    ]
+                }
+            }
+        }
+    },
+    "params": {
+        "gasLimitBoundDivisor": "0x400",
+        "maximumExtraDataSize": "0x20",
+        "minGasLimit": "0x0",
+        "networkID" : "0x2615",
+        "eip155Transition": 0,
+        "validateChainIdTransition": 0,
+        "eip140Transition": 0,
+        "eip211Transition": 0,
+        "eip214Transition": 0,
+        "eip658Transition": 0
+    },
+    "genesis": {
+        "seal": {
+            "authorityRound": {
+                "step": "0x0",
+                "signature": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+            }
+        },
+        "difficulty": "0x20000",
+        "gasLimit": "0x2625A00"
+    },
+    "accounts": {
+        "0x0000000000000000000000000000000000000001": { "balance": "1", "builtin": { "name": "ecrecover", "pricing": { "linear": { "base": 3000, "word": 0 } } } },
+        "0x0000000000000000000000000000000000000002": { "balance": "1", "builtin": { "name": "sha256", "pricing": { "linear": { "base": 60, "word": 12 } } } },
+        "0x0000000000000000000000000000000000000003": { "balance": "1", "builtin": { "name": "ripemd160", "pricing": { "linear": { "base": 600, "word": 120 } } } },
+        "0x0000000000000000000000000000000000000004": { "balance": "1", "builtin": { "name": "identity", "pricing": { "linear": { "base": 15, "word": 3 } } } }
+    }
+}
