@@ -1,0 +1,269 @@
+- hosts: gcp_role_eth
+  remote_user: ubuntu
+  gather_facts: no
+  # strategy: free
+  vars:
+    role: eth
+  tasks:
+    # NTP
+    - name: NTP time sync
+      apt:
+        name: chrony
+        update_cache: yes
+      become: yes
+      tags:
+        - ntp
+
+    # Buffer sizes
+    - name: Set udp memory
+      shell: sudo echo -e "26214400\t26214400\t26214400" > /proc/sys/net/ipv4/udp_mem
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set read memory max
+      shell: sysctl -w net.core.rmem_max=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set write memory max
+      shell: sysctl -w net.core.wmem_max=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set read memory default
+      shell: sysctl -w net.core.rmem_default=26214400
+      become: yes
+      tags:
+        - buffer
+
+    - name: Set write memory default
+      shell: sysctl -w net.core.wmem_default=26214400
+      become: yes
+      tags:
+        - buffer
+
+    # Ephemeral storage
+    - name: Create filesystem
+      block:
+        - name: Create filesystem
+          filesystem:
+            fstype: ext4
+            dev: /dev/nvme0n1
+          become: yes
+
+        - name: Mount filesystem
+          mount:
+            path: /home/ubuntu/eth_data
+            state: mounted
+            src: /dev/nvme0n1
+            fstype: ext4
+          become: yes
+
+        - name: Permissions
+          file:
+            path: /home/ubuntu/eth_data
+            state: directory
+            recurse: yes
+            owner: ubuntu
+            group: ubuntu
+          become: yes
+      rescue:
+        - name: Create filesystem
+          filesystem:
+            fstype: ext4
+            dev: /dev/nvme1n1
+          become: yes
+
+        - name: Mount filesystem
+          mount:
+            path: /home/ubuntu/eth_data
+            state: mounted
+            src: /dev/nvme1n1
+            fstype: ext4
+          become: yes
+
+        - name: Permissions
+          file:
+            path: /home/ubuntu/eth_data
+            state: directory
+            recurse: yes
+            owner: ubuntu
+            group: ubuntu
+          become: yes
+      tags:
+        - ssd
+
+    # parity
+    - name: Nuke the chain
+      shell: supervisorctl stop parity && supervisorctl stop txgen && rm -rf ./eth_data/*
+      become: yes
+      tags:
+        - nuke
+
+    - name: Copy parity executable
+      copy: src={{parity_path}} dest=/home/ubuntu/parity
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - parity
+
+    - name: Copy chain spec
+      copy: src=./parity/chainspec.json dest=/home/ubuntu/chainspec.json
+              owner=ubuntu group=ubuntu mode=0644
+      tags:
+        - parity
+
+    - name: Copy config file
+      copy: src=./parity/parity.toml dest=/home/ubuntu/parity.toml
+              owner=ubuntu group=ubuntu mode=0644
+      tags:
+        - parity
+
+    - name: Create pwd file
+      shell: echo "{{inventory_hostname}}" > /home/ubuntu/node.pwds
+      tags:
+        - parity
+
+    - name: Restart parity
+      supervisorctl:
+        name: parity
+        state: restarted
+      become: yes
+      tags:
+        - parity
+
+    - name: Add enode
+      shell: "curl --data '{\"jsonrpc\":\"2.0\",\"method\":\"parity_addReservedPeer\",\"params\":[\"enode://5c9b1467e8a7ee4e370eb6d38b6d1023bc81df806bcd9200830482255a06122d882505fa2f4fe2105cac983686619cefda5139d60a38537b7429343320dc836f@127.0.0.1:9000\"],\"id\":0}' -H \"Content-Type: application/json\" -X POST localhost:8540"
+      tags:
+        - enode
+
+    - name: Add signer account
+      shell: "curl --data '{\"jsonrpc\":\"2.0\",\"method\":\"parity_newAccountFromPhrase\",\"params\":[\"{{ inventory_hostname }}\", \"{{ inventory_hostname }}\"],\"id\":0}' -H \"Content-Type: application/json\" -X POST localhost:8540 | egrep -o '0x[0-9a-f]+'"
+      register: signer
+      tags:
+        - signer
+
+    - debug: msg="{{signer.stdout}}"
+      tags:
+        - signer
+
+    - name: Activate signer
+      shell: "curl --data '{\"method\":\"parity_setEngineSigner\",\"params\":[\"{{ signer.stdout }}\",\"{{ inventory_hostname }}\"],\"id\":1,\"jsonrpc\":\"2.0\"}' -H \"Content-Type: application/json\" -X POST localhost:8540"
+      register: activateSigner
+      tags:
+        - signer
+
+    - debug: msg="{{activateSigner.stdout}}"
+      tags:
+        - signer
+
+    # onramp
+    - name: Copy onramp executable
+      copy: src={{onramp_path}} dest=/home/ubuntu/onramp
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - onramp
+
+    - name: Copy key
+      copy: src={{onramp_key_path}} dest=/home/ubuntu/pkey.ec.der
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - onramp
+
+    - name: Restart onramp
+      supervisorctl:
+        name: onramp
+        state: restarted
+      become: yes
+      tags:
+        - onramp
+
+    - name: Copy txgen executable
+      copy: src=./txgen dest=/home/ubuntu/txgen
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - txgen
+
+    # Supervisor
+    - name: Install supervisor
+      apt:
+        name: supervisor
+        update_cache: yes
+      become: yes
+      tags:
+        - config
+
+    - name: Parity config file
+      copy: src=./parity.conf dest=/etc/supervisor/conf.d/parity.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - config
+
+    - name: OnRamp config file
+      copy: src=./onramp.conf dest=/etc/supervisor/conf.d/onramp.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - config
+
+    - name: TxGen config file
+      copy: src=./txgen.conf dest=/etc/supervisor/conf.d/txgen.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - config
+
+    - name: Reload supervisor config
+      command: supervisorctl reload
+      become: yes
+      tags:
+        - config
+
+    - name: Restart txgen
+      supervisorctl:
+        name: txgen
+        state: restarted
+      become: yes
+      tags:
+        - txgen
+
+    # Filebeat
+    - name: Add signing key
+      shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+      become: yes
+      tags:
+        - filebeat
+
+    - name: Add apt repo
+      shell: echo "deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list; sudo apt update -y
+      become: yes
+      tags:
+        - filebeat
+
+    - name: Install filebeat
+      apt:
+        name: filebeat
+        update_cache: yes
+      become: yes
+      tags:
+        - filebeat
+
+    - name: Filebeat config
+      template:
+        src: ./filebeat.yml.j2
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: 0744
+      become: yes
+      tags:
+        - filebeat
+
+    - name: Start filebeat
+      command: service filebeat restart
+      become: yes
+      tags:
+        - filebeat
