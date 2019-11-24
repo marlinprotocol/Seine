@@ -1,0 +1,82 @@
+- hosts: gcp_role_beacon
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: beacon
+  tasks:
+    # NTP
+    - name: NTP time sync
+      apt:
+        name: chrony
+        update_cache: yes
+      become: yes
+      tags:
+        - ntp
+
+    # Beacon
+    - name: Copy beacon executable
+      copy: src={{beacon_path}} dest=/home/ubuntu/beacon
+              owner=ubuntu group=ubuntu mode=0744
+
+    # Supervisor
+    - name: Install supervisor
+      apt:
+        name: supervisor
+        update_cache: yes
+      become: yes
+
+    - name: Beacon config file
+      copy: src=./beacon.conf dest=/etc/supervisor/conf.d/beacon.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+
+    - name: Reload supervisor config
+      supervisorctl:
+        name: beacon
+        state: present
+      become: yes
+
+    - name: Restart beacon
+      supervisorctl:
+        name: beacon
+        state: restarted
+      become: yes
+
+    # # Filebeat
+    # - name: Add signing key
+    #   shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Add apt repo
+    #   shell: echo "deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list; sudo apt update -y
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Install filebeat
+    #   apt:
+    #     name: filebeat
+    #     update_cache: yes
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Filebeat config
+    #   template:
+    #     src: ./filebeat.yml.j2
+    #     dest: /etc/filebeat/filebeat.yml
+    #     owner: root
+    #     group: root
+    #     mode: 0744
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Start filebeat
+    #   command: service filebeat restart
+    #   become: yes
+    #   tags:
+    #     - filebeat
