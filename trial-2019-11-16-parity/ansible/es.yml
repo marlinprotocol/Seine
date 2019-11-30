@@ -26,3 +26,15 @@
         state: present
         filename: elastic-7.x
       become: yes
+
+    - name: Install ES
+      apt:
+        name: elasticsearch-oss
+        update_cache: yes
+      become: yes
+
+    - name: (Re)start ES
+      shell: service elasticsearch restart
+      become: yes
+      tags:
+        - es
