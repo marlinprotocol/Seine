@@ -50,3 +50,17 @@
       become: yes
       tags:
         - kibana
+
+    - name: Install logstash
+      apt:
+        name: logstash-oss
+        update_cache: yes
+      become: yes
+      tags:
+        - logstash
+
+    - name: (Re)start logstash
+      shell: service logstash restart
+      become: yes
+      tags:
+        - logstash
