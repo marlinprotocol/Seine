@@ -64,3 +64,31 @@
       become: yes
       tags:
         - logstash
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        update_cache: yes
+      become: yes
+
+    - name: Copy nginx config
+      copy: src=./kibana dest=/etc/nginx/sites-available/kibana
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - nginx
+
+    - name: Symlink nginx config
+      file:
+        src: /etc/nginx/sites-available/kibana
+        dest: /etc/nginx/sites-enabled/kibana
+        owner: ubuntu
+        group: ubuntu
+        state: link
+      become: yes
+
+    - name: Reload nginx
+      shell: service nginx reload
+      become: yes
+      tags:
+        - nginx
