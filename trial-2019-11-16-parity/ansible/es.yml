@@ -59,6 +59,15 @@
       tags:
         - logstash
 
+    - name: Copy logstash configs
+      copy: src={{item}} dest=/etc/logstash/conf.d/
+              owner=ubuntu group=ubuntu mode=0644
+      with_fileglob:
+        - ./logstash/*.conf
+      become: yes
+      tags:
+        - logstash
+
     - name: (Re)start logstash
       shell: service logstash restart
       become: yes
