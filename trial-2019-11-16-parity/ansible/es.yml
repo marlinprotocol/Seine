@@ -1,0 +1,15 @@
+- hosts: gcp_role_monitoring
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: monitoring
+  tasks:
+    # NTP
+    - name: NTP time sync
+      apt:
+        name: chrony
+        update_cache: yes
+      become: yes
+      tags:
+        - ntp
