@@ -38,3 +38,15 @@
       become: yes
       tags:
         - es
+
+    - name: Install Kibana
+      apt:
+        name: kibana-oss
+        update_cache: yes
+      become: yes
+
+    - name: (Re)start Kibana
+      shell: service kibana restart
+      become: yes
+      tags:
+        - kibana
