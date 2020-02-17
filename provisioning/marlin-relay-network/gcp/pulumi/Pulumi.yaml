@@ -1,0 +1,3 @@
+name: marlin-relay-network
+runtime: nodejs
+description: Marlin relay network with beacons and connections set up as needed
