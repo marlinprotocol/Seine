@@ -1,0 +1,15 @@
+- name: NTP time sync
+  apt:
+    name: chrony
+    update_cache: yes
+  become: yes
+  tags:
+    - ntp
+
+- name: Ensure chrony is up
+  service:
+    name: chrony
+    state: started
+  become: yes
+  tags:
+    - ntp
