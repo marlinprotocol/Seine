@@ -21,6 +21,30 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
         let subnets = {...args.beacon_subnets, ...args.monitoring_subnets, ...args.relay_subnets}
         this.network = new GCPGlobalNetwork(`${name}-globalnet`, {
             subnets: subnets,
+            firewalls: {
+                "ssh": GCPGlobalNetwork.generateSSHFirewall(),
+                "egress": GCPGlobalNetwork.generateEgressFirewall(),
+                "internal": {
+                    direction: "INGRESS",
+                    allows: [{
+                        protocol: "tcp",
+                        ports: ["0-65535"],
+                    }, {
+                        protocol: "udp",
+                        ports: ["0-65535"],
+                    }],
+                    sourceRanges: ["192.168.0.0/20"],
+                },
+                "www": {
+                    direction: "INGRESS",
+                    allows: [{
+                        protocol: "tcp",
+                        ports: ["80", "443"],
+                    }],
+                    sourceRanges: ["0.0.0.0/0"],
+                    targetTags: ["monitoring"],
+                },
+            },
         });
     }
 }
