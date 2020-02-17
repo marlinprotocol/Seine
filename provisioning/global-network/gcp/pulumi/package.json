@@ -1,0 +1,10 @@
+{
+    "name": "@marlinlabs/pulumi-gcp-global-network",
+    "devDependencies": {
+        "@types/node": "^8.0.0"
+    },
+    "dependencies": {
+        "@pulumi/gcp": "^1.9.0",
+        "@pulumi/pulumi": "^1.8.1"
+    }
+}
