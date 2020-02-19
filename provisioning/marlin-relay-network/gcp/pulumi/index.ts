@@ -2,6 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
 import { GCPGlobalNetwork } from "@marlinlabs/pulumi-gcp-global-network"
+import { GCPInstances } from "@marlinlabs/pulumi-gcp-instances"
 
 
 interface GCPRelayNetworkArgs {
@@ -14,6 +15,8 @@ interface GCPRelayNetworkArgs {
 
 export class GCPRelayNetwork extends pulumi.ComponentResource {
     readonly network: GCPGlobalNetwork;
+    readonly beaconInstances: GCPInstances;
+    readonly beaconIps: pulumi.Output<string>[];
 
     static readonly monitoringNetworkTag = "monitoring";
     static readonly beaconNetworkTag = "beacon";
@@ -50,6 +53,25 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
                     targetTags: [GCPRelayNetwork.monitoringNetworkTag],
                 },
             },
+        });
+
+        this.beaconInstances = new GCPInstances(`${name}-beacons`, {
+            subnets: Object.keys(args.beacon_subnets).reduce((o, key) => { return { ...o, [key]: this.network.subnets[key] }; }, {}),
+            instanceType: "g1-small",
+            count: 1,
+            networkTags: ["beacon"],
+            labels: {
+                ...args.labels,
+                "role": "beacon",
+            },
+        });
+
+        this.beaconIps = Object.values(this.beaconInstances.instances).map((i) => {
+            return i.apply((i) => {
+                return i.networkInterfaces.apply((i) => {
+                    return i[0].networkIp;
+                });
+            });
         });
     }
 }
