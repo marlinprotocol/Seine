@@ -14,6 +14,7 @@ interface GCPRelayNetworkArgs {
 
 export class GCPRelayNetwork extends pulumi.ComponentResource {
     readonly network: GCPGlobalNetwork;
+
     static readonly monitoringNetworkTag = "monitoring";
     static readonly beaconNetworkTag = "beacon";
     static readonly relayNetworkTag = "relay";

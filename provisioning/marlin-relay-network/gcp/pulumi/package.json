@@ -1,5 +1,5 @@
 {
-    "name": "gcp-typescript",
+    "name": "@marlinlabs/marlin-relay-network-gcp-pulumi",
     "devDependencies": {
         "@types/node": "^8.0.0"
     },
