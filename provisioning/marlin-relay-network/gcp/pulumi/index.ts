@@ -22,6 +22,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
         this.network = new GCPGlobalNetwork(`${name}-globalnet`, {
             subnets: subnets,
             firewalls: {
+                ...args.firewalls,
                 "ssh": GCPGlobalNetwork.generateSSHFirewall(),
                 "egress": GCPGlobalNetwork.generateEgressFirewall(),
                 "internal": {
