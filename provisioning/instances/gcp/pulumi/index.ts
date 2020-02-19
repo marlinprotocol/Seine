@@ -23,8 +23,8 @@ export class GCPInstances extends pulumi.ComponentResource {
             let subnet = args.subnets[subnetName];
 
             for (let idx = 0; idx < args.count; ++idx) {
-                this.instances[`${subnetName}-${name}-${idx+1}`] = pulumi.output(subnet).apply(subnet => {
-                    return new gcp.compute.Instance(`${subnetName}-${name}-${idx+1}`, {
+                this.instances[`${name}-${subnetName}-${idx+1}`] = pulumi.output(subnet).apply(subnet => {
+                    return new gcp.compute.Instance(`${name}-${subnetName}-${idx+1}`, {
                         allowStoppingForUpdate: false,
                         bootDisk: {
                             initializeParams: {
