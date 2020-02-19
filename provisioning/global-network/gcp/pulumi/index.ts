@@ -33,7 +33,7 @@ export class GCPGlobalNetwork extends pulumi.ComponentResource {
 
         this.subnets = {};
         for (let subnetName in args.subnets) {
-            this.subnets[subnetName] = new gcp.compute.Subnetwork(subnetName, {
+            this.subnets[subnetName] = new gcp.compute.Subnetwork(`${name}-${subnetName}`, {
                 network: this.network.id,
                 region: args.subnets[subnetName].region,
                 ipCidrRange: args.subnets[subnetName].cidr,
