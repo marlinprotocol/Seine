@@ -14,6 +14,9 @@ interface GCPRelayNetworkArgs {
 
 export class GCPRelayNetwork extends pulumi.ComponentResource {
     readonly network: GCPGlobalNetwork;
+    static readonly monitoringNetworkTag = "monitoring";
+    static readonly beaconNetworkTag = "beacon";
+    static readonly relayNetworkTag = "relay";
 
     constructor(name: string, args: GCPRelayNetworkArgs, opts?: pulumi.ComponentResourceOptions) {
         super("marlin:GCP:RelayNetwork", name, {}, opts);
@@ -43,7 +46,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
                         ports: ["80", "443"],
                     }],
                     sourceRanges: ["0.0.0.0/0"],
-                    targetTags: ["monitoring"],
+                    targetTags: [GCPRelayNetwork.monitoringNetworkTag],
                 },
             },
         });
