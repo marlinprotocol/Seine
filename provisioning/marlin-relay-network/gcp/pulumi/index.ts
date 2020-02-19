@@ -34,7 +34,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
                         protocol: "udp",
                         ports: ["0-65535"],
                     }],
-                    sourceRanges: ["192.168.0.0/20"],
+                    sourceRanges: Object.values(subnets).map((subnet) => { return subnet.cidr }),
                 },
                 "www": {
                     direction: "INGRESS",
