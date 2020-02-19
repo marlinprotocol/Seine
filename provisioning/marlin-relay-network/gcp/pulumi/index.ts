@@ -6,9 +6,9 @@ import { GCPInstances } from "@marlinlabs/pulumi-gcp-instances"
 
 
 interface GCPRelayNetworkArgs {
-    beacon_subnets: {[key: string]: {region: string, cidr: string}};
-    monitoring_subnets: {[key: string]: {region: string, cidr: string}};
-    relay_subnets: {[key: string]: {region: string, cidr: string}};
+    beaconSubnets: {[key: string]: {region: string, cidr: string}};
+    monitoringSubnets: {[key: string]: {region: string, cidr: string}};
+    relaySubnets: {[key: string]: {region: string, cidr: string}};
     firewalls?: {[key: string]: Omit<gcp.compute.FirewallArgs, "network">};
     labels?: pulumi.Input<{[key: string]: any}>;
 }
@@ -25,7 +25,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
     constructor(name: string, args: GCPRelayNetworkArgs, opts?: pulumi.ComponentResourceOptions) {
         super("marlin:GCP:RelayNetwork", name, {}, opts);
 
-        let subnets = {...args.beacon_subnets, ...args.monitoring_subnets, ...args.relay_subnets}
+        let subnets = {...args.beaconSubnets, ...args.monitoringSubnets, ...args.relaySubnets}
         this.network = new GCPGlobalNetwork(`${name}-globalnet`, {
             subnets: subnets,
             firewalls: {
@@ -56,7 +56,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
         });
 
         this.beaconInstances = new GCPInstances(`${name}-beacons`, {
-            subnets: Object.keys(args.beacon_subnets).reduce((o, key) => { return { ...o, [key]: this.network.subnets[key] }; }, {}),
+            subnets: Object.keys(args.beaconSubnets).reduce((o, key) => { return { ...o, [key]: this.network.subnets[key] }; }, {}),
             instanceType: "g1-small",
             count: 1,
             networkTags: ["beacon"],
