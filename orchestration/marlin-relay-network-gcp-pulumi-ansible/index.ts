@@ -52,7 +52,7 @@ delete subnets["southamerica-east1"];
 // delete subnets["us-west1"];
 // delete subnets["us-west2"];
 
-let relayNetwork = new GCPRelayNetwork("someproject", {
+let relayNetwork = new GCPRelayNetwork(`${labels["project"]}`, {
     beacon_subnets: {"us-west1": subnets["us-west1"]},
     monitoring_subnets: {"us-west1": subnets["us-west1"]},
     relay_subnets: subnets,
