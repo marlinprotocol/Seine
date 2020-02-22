@@ -5,3 +5,17 @@
   vars:
     role: relay
   tasks:
+    - name: SSH keyscan
+      import_role:
+        name: sshkeyscan
+        tasks_from: sshkeyscan
+      tags:
+        - never
+        - keyscan
+
+    - name: NTP
+      import_role:
+        name: ntp
+        tasks_from: chrony
+      tags:
+        - ntp
