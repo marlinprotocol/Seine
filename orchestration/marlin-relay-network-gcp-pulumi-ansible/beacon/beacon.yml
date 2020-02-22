@@ -1,0 +1,54 @@
+- hosts: gcp_role_beacon
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: beacon
+  tasks:
+    - name: SSH keyscan
+      import_role:
+        name: sshkeyscan
+        tasks_from: sshkeyscan
+      tags:
+        - never
+        - keyscan
+
+    - name: NTP
+      import_role:
+        name: ntp
+        tasks_from: chrony
+      tags:
+        - ntp
+
+    # Beacon
+    - name: Copy beacon executable
+      copy: src={{beacon_path}} dest=/home/ubuntu/beacon
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - beacon
+
+    # Supervisor
+    - name: Install supervisor
+      apt:
+        name: supervisor
+        update_cache: yes
+      become: yes
+
+    - name: Beacon config file
+      copy: src=./beacon.conf dest=/etc/supervisor/conf.d/beacon.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+
+    - name: Reload supervisor config
+      supervisorctl:
+        name: beacon
+        state: present
+      become: yes
+
+    - name: Restart beacon
+      supervisorctl:
+        name: beacon
+        state: restarted
+      become: yes
+      tags:
+        - beacon
