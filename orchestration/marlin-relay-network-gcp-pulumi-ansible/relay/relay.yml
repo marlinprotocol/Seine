@@ -1,0 +1,7 @@
+- hosts: gcp_role_relay
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: relay
+  tasks:
