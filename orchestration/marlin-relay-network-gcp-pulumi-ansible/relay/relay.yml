@@ -96,6 +96,15 @@
       tags:
         - relay
 
+    - name: Stop relay
+      supervisorctl:
+        name: relay
+        state: stopped
+      become: yes
+      tags:
+        - never
+        - stop
+
     # Filebeat
     - name: Add filebeat apt key
       apt_key:
@@ -138,3 +147,10 @@
       become: yes
       tags:
         - filebeat
+
+    - name: Nuke logs
+      shell: rm -rf /var/log/supervisor/relay*
+      become: yes
+      tags:
+        - never
+        - lognuke
