@@ -148,6 +148,7 @@
       become: yes
       tags:
         - nginx
+        - htpasswd
 
     - name: Copy nginx config
       copy: src=./kibana dest=/etc/nginx/sites-available/kibana
