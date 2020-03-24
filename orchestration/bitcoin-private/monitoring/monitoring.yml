@@ -4,8 +4,6 @@
   strategy: free
   vars:
     role: monitoring
-    monitoring_hostname: kibana.marlin.pro
-    monitoring_ip: "{{ hostvars[groups['gcp_role_monitoring'][0]].ansible_default_ipv4.address }}"
   tasks:
     - name: SSH keyscan
       import_role:
@@ -14,12 +12,6 @@
       tags:
         - never
         - keyscan
-
-    - name: Gather facts
-      setup:
-      tags:
-        - never
-        - gather
 
     - name: NTP
       import_role:
@@ -98,7 +90,7 @@
         - logstash
 
     - name: Copy logstash configs
-      template: src={{item}} dest=/etc/logstash/conf.d/
+      copy: src={{item}} dest=/etc/logstash/conf.d/
               owner=ubuntu group=ubuntu mode=0644
       with_fileglob:
         - ./logstash/*.conf
@@ -129,7 +121,7 @@
         - tls
 
     - name: Get cert
-      shell: certbot -n certonly --domains {{monitoring_hostname}} --standalone --agree-tos -m roshan@marlin.pro --keep-until-expiring
+      shell: certbot -n certonly --domains bitcoin.marlin.pro --standalone --agree-tos -m roshan@marlin.pro --keep-until-expiring
       become: yes
       tags:
         - tls
@@ -159,7 +151,7 @@
         - htpasswd
 
     - name: Copy nginx config
-      template: src=./kibana dest=/etc/nginx/sites-available/kibana
+      copy: src=./kibana dest=/etc/nginx/sites-available/kibana
               owner=ubuntu group=ubuntu mode=0644
       become: yes
       tags:

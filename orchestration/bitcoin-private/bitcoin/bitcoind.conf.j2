@@ -1,0 +1,7 @@
+[program:bitcoind]
+user=ubuntu
+directory=/home/ubuntu
+command=/home/ubuntu/bitcoind -regtest -txindex -discover -maxsendbuffer=50000 -maxreceivebuffer=50000 -datadir=/home/ubuntu/.bitcoin -server -minrelaytxfee=0 -paytxfee=0 -blockmintxfee=0 -fallbackfee=0 -discardfee=0 -addnode={{bitcoind_bootstrap}} -seednode={{bitcoind_bootstrap}}
+priority=100
+autostart=true
+autorestart=true

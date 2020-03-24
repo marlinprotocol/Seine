@@ -2,14 +2,14 @@ filebeat.inputs:
 - type: log
   enabled: true
   paths:
-    - /var/log/supervisor/beacon-stdout-*
+    - /var/log/supervisor/master-stdout-*
     - /var/log/supervisor/supervisord.log
 
 output.logstash:
-  hosts: ["{{monitoring_ip}}:5051"]
+  hosts: ["192.168.14.6:5040"]
 
 setup.kibana:
-  host: "{{monitoring_ip}}:5601"
+  host: "192.168.14.6:5601"
 
 xpack.security.enabled: false
 xpack.monitoring.enabled: false

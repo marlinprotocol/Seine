@@ -4,3 +4,4 @@ node_modules/
 Pulumi.*.yaml
 ansiblevars.yml
 inv.gcp.yml
+anscache/

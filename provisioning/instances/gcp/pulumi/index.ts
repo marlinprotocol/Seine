@@ -2,9 +2,8 @@ import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
 interface GCPInstancesArgs {
-    subnets: {[key: string]: pulumi.Input<gcp.compute.Subnetwork>};
+    subnets: {[key: string]: {subnet: pulumi.Input<gcp.compute.Subnetwork>, count: number}};
     instanceType: string;
-    count: number;
     preemptible?: boolean;
     localssd?: boolean;
     networkTags?: pulumi.Input<pulumi.Input<string>[]>;
@@ -20,9 +19,10 @@ export class GCPInstances extends pulumi.ComponentResource {
         this.instances = {};
 
         for(let subnetName in args.subnets) {
-            let subnet = args.subnets[subnetName];
+            let subnet = args.subnets[subnetName].subnet;
+            let count = args.subnets[subnetName].count;
 
-            for (let idx = 0; idx < args.count; ++idx) {
+            for (let idx = 0; idx < count; ++idx) {
                 this.instances[`${name}-${subnetName}-${idx+1}`] = pulumi.output(subnet).apply(subnet => {
                     return new gcp.compute.Instance(`${name}-${subnetName}-${idx+1}`, {
                         allowStoppingForUpdate: false,

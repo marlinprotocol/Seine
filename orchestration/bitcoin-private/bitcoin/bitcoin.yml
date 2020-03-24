@@ -1,0 +1,256 @@
+- hosts: gcp_role_bitcoin
+  remote_user: ubuntu
+  gather_facts: yes
+  # strategy: free
+  vars:
+    role: bitcoin
+    bitcoind_bootstrap: "{{hostvars[groups['gcp_role_bitcoin'][0]].ansible_default_ipv4.address}}:18444"
+  tasks:
+    - name: SSH keyscan
+      import_role:
+        name: sshkeyscan
+        tasks_from: sshkeyscan
+      tags:
+        - never
+        - keyscan
+
+    - name: NTP
+      import_role:
+        name: ntp
+        tasks_from: chrony
+      tags:
+        - ntp
+
+    # # Ephemeral storage
+    # - name: Create filesystem
+    #   block:
+    #     - name: Create filesystem
+    #       filesystem:
+    #         fstype: ext4
+    #         dev: /dev/nvme0n1
+    #       become: yes
+
+    #     - name: Mount filesystem
+    #       mount:
+    #         path: /home/ubuntu/eth_data
+    #         state: mounted
+    #         src: /dev/nvme0n1
+    #         fstype: ext4
+    #       become: yes
+
+    #     - name: Permissions
+    #       file:
+    #         path: /home/ubuntu/eth_data
+    #         state: directory
+    #         recurse: yes
+    #         owner: ubuntu
+    #         group: ubuntu
+    #       become: yes
+    #   rescue:
+    #     - name: Create filesystem
+    #       filesystem:
+    #         fstype: ext4
+    #         dev: /dev/nvme1n1
+    #       become: yes
+
+    #     - name: Mount filesystem
+    #       mount:
+    #         path: /home/ubuntu/eth_data
+    #         state: mounted
+    #         src: /dev/nvme1n1
+    #         fstype: ext4
+    #       become: yes
+
+    #     - name: Permissions
+    #       file:
+    #         path: /home/ubuntu/eth_data
+    #         state: directory
+    #         recurse: yes
+    #         owner: ubuntu
+    #         group: ubuntu
+    #       become: yes
+    #   tags:
+    #     - ssd
+
+    # bitcoin
+    - name: Nuke chain and stop
+      shell: supervisorctl stop all && rm -rf /home/ubuntu/.bitcoin/*
+      become: yes
+      tags:
+        - never
+        - nuke
+
+    - name: Make bitcoin datadir
+      shell: mkdir -p /home/ubuntu/.bitcoin
+      tags:
+        - datadir
+
+    - name: Copy bitcoin daemon
+      copy: src={{bitcoind_path}} dest=/home/ubuntu/bitcoind
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - bitcoind
+
+    - name: Copy bitcoin cli
+      copy: src={{bitcoincli_path}} dest=/home/ubuntu/bitcoin-cli
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - bitcoincli
+
+    # blockgen
+    - name: Copy blockgen script
+      copy: src=./blockgen.py dest=/home/ubuntu/blockgen.py
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - blockgen
+
+    # txgen
+    - name: Copy txgen script
+      copy: src=./txgen.py dest=/home/ubuntu/txgen.py
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - txgen
+
+    # - name: Pregen tx
+    #   shell: python3 /home/ubuntu/txgen.py
+    #   tags:
+    #     - txgen
+
+    # txflood
+    - name: Copy txflood script
+      copy: src=./txflood.py dest=/home/ubuntu/txflood.py
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - txflood
+
+    - name: Flood tx
+      shell: python3 /home/ubuntu/txflood.py
+      tags:
+        - txflood
+
+    # Supervisor
+    - name: Install supervisor
+      apt:
+        name: supervisor
+        update_cache: yes
+      become: yes
+      tags:
+        - supervisor
+
+    - name: bitcoin config file
+      template: src=./bitcoind.conf.j2 dest=/etc/supervisor/conf.d/bitcoind.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - config
+
+    - name: blockgen config file
+      template: src=./blockgen.conf dest=/etc/supervisor/conf.d/blockgen.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - config
+
+    - name: txgen config file
+      template: src=./txgen.conf dest=/etc/supervisor/conf.d/txgen.conf
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - config
+
+    - name: Restart updated configs
+      shell:  supervisorctl reload
+      become: yes
+      tags:
+        - config
+
+    - name: Restart bitcoin
+      supervisorctl:
+        name: bitcoind
+        state: restarted
+      become: yes
+      tags:
+        - bitcoind
+
+    - name: Restart blockgen
+      supervisorctl:
+        name: blockgen
+        state: restarted
+      become: yes
+      tags:
+        - blockgen
+
+    - name: Restart txgen
+      supervisorctl:
+        name: txgen
+        state: restarted
+      become: yes
+      tags:
+        - txgen
+
+    # # wallet
+    # - name: Copy wallet
+    #   copy: src=./wallet.txt dest=/home/ubuntu/wallet.txt
+    #           owner=ubuntu group=ubuntu mode=0744
+    #   tags:
+    #     - wallet
+
+    # - name: Import wallet
+    #   shell: ./bitcoin-cli -regtest importwallet "/home/ubuntu/wallet.txt"
+    #   tags:
+    #     - wallet
+
+    # address
+    - name: Generate address for gen
+      shell: ./bitcoin-cli -regtest getnewaddress | tr -d '\n' > address.txt
+      tags:
+        - address
+
+    - name: Generate 100 blocks to address to fund it
+      shell: ./bitcoin-cli -regtest generatetoaddress 100 $(cat address.txt) && sleep 1
+      throttle: 1
+      tags:
+        - address
+
+    # # Filebeat
+    # - name: Add filebeat apt key
+    #   apt_key:
+    #     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    #     state: present
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Add filebeat apt repo
+    #   apt_repository:
+    #     repo: deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main
+    #     state: present
+    #     filename: elastic-7.x
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Install filebeat
+    #   apt:
+    #     name: filebeat
+    #     update_cache: yes
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Filebeat config
+    #   template:
+    #     src: ./filebeat.yml.j2
+    #     dest: /etc/filebeat/filebeat.yml
+    #     owner: root
+    #     group: root
+    #     mode: 0744
+    #   become: yes
+    #   tags:
+    #     - filebeat
+
+    # - name: Start filebeat
+    #   shell: service filebeat restart
+    #   become: yes
+    #   tags:
+    #     - filebeat

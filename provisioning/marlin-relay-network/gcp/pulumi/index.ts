@@ -6,9 +6,9 @@ import { GCPInstances } from "@marlinlabs/pulumi-gcp-instances"
 
 
 interface GCPRelayNetworkArgs {
-    beaconSubnets: {[key: string]: {region: string, cidr: string}};
-    monitoringSubnets: {[key: string]: {region: string, cidr: string}};
-    relaySubnets: {[key: string]: {region: string, cidr: string}};
+    beaconSubnets: {[key: string]: {region: string, cidr: string, count: number}};
+    monitoringSubnets: {[key: string]: {region: string, cidr: string, count: number}};
+    relaySubnets: {[key: string]: {region: string, cidr: string, count: number}};
     firewalls?: {[key: string]: Omit<gcp.compute.FirewallArgs, "network">};
     labels?: pulumi.Input<{[key: string]: any}>;
 }
@@ -60,9 +60,13 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
         });
 
         this.beaconInstances = new GCPInstances(`${name}-beacons`, {
-            subnets: Object.keys(args.beaconSubnets).reduce((o, key) => { return { ...o, [key]: this.network.subnets[key] }; }, {}),
+            subnets: Object.keys(args.beaconSubnets).reduce((o, key) => {
+                return {
+                    ...o,
+                    [key]: {subnet: this.network.subnets[key], count: args.beaconSubnets[key].count},
+                };
+            }, {}),
             instanceType: "g1-small",
-            count: 1,
             networkTags: ["beacon"],
             labels: {
                 ...args.labels,
@@ -79,9 +83,13 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
         });
 
         this.relayInstances = new GCPInstances(`${name}-relays`, {
-            subnets: Object.keys(args.relaySubnets).reduce((o, key) => { return { ...o, [key]: this.network.subnets[key] }; }, {}),
+            subnets: Object.keys(args.relaySubnets).reduce((o, key) => {
+                return {
+                    ...o,
+                    [key]: {subnet: this.network.subnets[key], count: args.relaySubnets[key].count},
+                };
+            }, {}),
             instanceType: "n1-standard-1",
-            count: 1,
             networkTags: ["relay"],
             labels: {
                 ...args.labels,
@@ -98,9 +106,13 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
         });
 
         this.monitoringInstances = new GCPInstances(`${name}-monitorings`, {
-            subnets: Object.keys(args.monitoringSubnets).reduce((o, key) => { return { ...o, [key]: this.network.subnets[key] }; }, {}),
+            subnets: Object.keys(args.monitoringSubnets).reduce((o, key) => {
+                return {
+                    ...o,
+                    [key]: {subnet: this.network.subnets[key], count: args.monitoringSubnets[key].count},
+                };
+            }, {}),
             instanceType: "n1-standard-1",
-            count: 1,
             networkTags: ["monitoring"],
             labels: {
                 ...args.labels,

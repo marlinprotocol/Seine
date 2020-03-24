@@ -1,15 +1,7 @@
 - name: Scan SSH keys on host
-  local_action: shell ssh-keyscan -H {{inventory_hostname}}
+  delegate_to: localhost
+  shell: ssh-keyscan -H {{inventory_hostname}}
   register: sshkey
-
-- debug: msg="{{sshkey.stdout}}"
-  tags:
-    - never
-    - debug
-
-# - name: Backup existing known_hosts
-#   delegate_to: localhost
-#   shell: cp ~/.ssh/known_hosts ~/.ssh/known_hosts.old
 
 - name: Remove existing entries from known_hosts
   delegate_to: localhost
