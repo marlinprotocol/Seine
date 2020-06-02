@@ -29,6 +29,14 @@
       tags:
         - buffer
 
+    # Supervisor
+    - name: Supervisor install
+      import_role:
+        name: supervisor
+        tasks_from: install
+      tags:
+        - supervisor
+
     # master
     - name: Copy master executable
       copy: src={{master_path}} dest=/home/ubuntu/master
@@ -36,52 +44,14 @@
       tags:
         - master
 
-    # Node exporter
-    # - name: Copy node exporter executable
-    #   copy: src={{node_exporter_path}} dest=/home/ubuntu/node_exporter
-    #           owner=ubuntu group=ubuntu mode=0744
-
-    # Supervisor
-    - name: Install supervisor
-      apt:
+    - name: Master config
+      import_role:
         name: supervisor
-        update_cache: yes
-      become: yes
-
-    - name: Master config file
-      copy: src=./master.conf dest=/etc/supervisor/conf.d/master.conf
-              owner=ubuntu group=ubuntu mode=0644
-      become: yes
-      tags:
-        - config
-
-    # - name: Node exporter config file
-    #   copy: src=./node_exporter.conf dest=/etc/supervisor/conf.d/node_exporter.conf
-    #           owner=ubuntu group=ubuntu mode=0644
-    #   become: yes
-
-    - name: Reload supervisor config
-      command: supervisorctl reload
-      become: yes
-      tags:
-        - config
-
-    - name: Restart master
-      supervisorctl:
-        name: master
-        state: restarted
-      become: yes
+        tasks_from: config
+      vars:
+        process_name: master
       tags:
         - master
-
-    - name: Stop master
-      supervisorctl:
-        name: master
-        state: stopped
-      become: yes
-      tags:
-        - never
-        - stop
 
     # Filebeat
     - name: Add filebeat apt key
