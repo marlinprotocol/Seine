@@ -55,7 +55,7 @@ delete subnets["us-west2"];
 
 let relayNetwork = new GCPRelayNetwork(`${labels["project"]}`, {
     beaconSubnets: {"us-west1": {...subnets["us-west1"], count: 1}},
-    monitoringSubnets: {"us-west1": {...subnets["us-west1"], count: 0}},
+    monitoringSubnets: {"us-west1": {...subnets["us-west1"], count: 1}},
     relaySubnets: Object.keys(subnets).reduce((o, key) => {
         return {
             ...o,
