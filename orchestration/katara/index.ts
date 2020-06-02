@@ -59,7 +59,7 @@ let relayNetwork = new GCPRelayNetwork(`${labels["project"]}`, {
     relaySubnets: Object.keys(subnets).reduce((o, key) => {
         return {
             ...o,
-            [key]: {...subnets[key], count: 0},
+            [key]: {...subnets[key], count: 1},
         };
     }, {}),
     labels: labels,
