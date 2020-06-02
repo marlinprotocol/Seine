@@ -1,7 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
-import { GCPRelayNetwork } from "@marlinlabs/marlin-relay-network-gcp-pulumi"
+import { GCPRelayNetwork } from "@marlinlabs/katara-gcp-pulumi"
 import { GCPInstances } from "@marlinlabs/pulumi-gcp-instances"
 
 let labels = {
