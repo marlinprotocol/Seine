@@ -55,28 +55,10 @@
         - master
 
     # Filebeat
-    - name: Add filebeat apt key
-      apt_key:
-        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-        state: present
-      become: yes
-      tags:
-        - filebeat
-
-    - name: Add filebeat apt repo
-      apt_repository:
-        repo: deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main
-        state: present
-        filename: elastic-7.x
-      become: yes
-      tags:
-        - filebeat
-
-    - name: Install filebeat
-      apt:
+    - name: Filebeat install
+      import_role:
         name: filebeat
-        update_cache: yes
-      become: yes
+        tasks_from: install
       tags:
         - filebeat
 
