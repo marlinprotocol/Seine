@@ -69,7 +69,7 @@ let masterInstances = new GCPInstances(`${labels["project"]}-masters`, {
     subnets: Object.keys(subnets).reduce((o, key) => {
         return {
             ...o,
-            [key]: {subnet: relayNetwork.network.subnets[key], count: 0},
+            [key]: {subnet: relayNetwork.network.subnets[key], count: 1},
         };
     }, {}),
     instanceType: "n1-standard-1",
