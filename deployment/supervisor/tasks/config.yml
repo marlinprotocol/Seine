@@ -1,7 +1,14 @@
 - name: Config file
-  copy: src={{config_path}} dest=/etc/supervisor/conf.d/{{config_path}}
-          owner=ubuntu group=ubuntu mode=0644
-  become: yes
+  block:
+    - name: File
+      copy: src={{config_path}} dest=/etc/supervisor/conf.d/{{config_path}}
+            owner=ubuntu group=ubuntu mode=0644
+      become: yes
+  rescue:
+    - name: Template
+      template: src={{config_path}}.j2 dest=/etc/supervisor/conf.d/{{config_path}}
+                owner=ubuntu group=ubuntu mode=0644
+      become: yes
 
 - name: Load config
   supervisorctl:
