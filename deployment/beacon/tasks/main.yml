@@ -1,0 +1,69 @@
+- name: SSH keyscan
+  import_role:
+    name: sshkeyscan
+    tasks_from: sshkeyscan
+  tags:
+    - never
+    - keyscan
+
+- name: Gather facts
+  setup:
+  tags:
+    - never
+    - gather
+
+- name: NTP
+  import_role:
+    name: ntp
+    tasks_from: chrony
+  tags:
+    - ntp
+
+# Supervisor
+- name: Supervisor install
+  import_role:
+    name: supervisor
+    tasks_from: install
+  tags:
+    - supervisor
+
+# Beacon
+- name: Copy beacon executable
+  copy: src={{beacon_path}} dest=/home/ubuntu/beacon
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - beacon
+
+- name: Beacon config
+  import_role:
+    name: supervisor
+    tasks_from: config
+  vars:
+    process_name: beacon
+  tags:
+    - beacon
+
+# Filebeat
+- name: Filebeat install
+  import_role:
+    name: filebeat
+    tasks_from: install
+  tags:
+    - filebeat
+
+- name: Filebeat config
+  template:
+    src: ./filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: 0744
+  become: yes
+  tags:
+    - filebeat
+
+- name: Restart filebeat
+  shell: service filebeat restart
+  become: yes
+  tags:
+    - filebeat
