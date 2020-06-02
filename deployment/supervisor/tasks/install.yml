@@ -1,0 +1,5 @@
+- name: Install supervisor
+  apt:
+    name: supervisor
+    update_cache: yes
+  become: yes

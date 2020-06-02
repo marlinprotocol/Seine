@@ -1,0 +1,16 @@
+- name: Config file
+  copy: src={{config_path}} dest=/etc/supervisor/conf.d/{{config_path}}
+          owner=ubuntu group=ubuntu mode=0644
+  become: yes
+
+- name: Load config
+  supervisorctl:
+    name: "{{process_name}}"
+    state: present
+  become: yes
+
+- name: Restart process
+  supervisorctl:
+    name: "{{process_name}}"
+    state: restarted
+  become: yes
