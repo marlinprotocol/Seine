@@ -14,6 +14,12 @@
         - never
         - keyscan
 
+    - name: Gather facts
+      setup:
+      tags:
+        - never
+        - gather
+
     - name: NTP
       import_role:
         name: ntp

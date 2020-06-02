@@ -4,6 +4,7 @@
   strategy: free
   vars:
     role: msggen
+    monitoring_ip: "{{ hostvars[groups['gcp_role_monitoring'][0]].ansible_default_ipv4.address }}"
   tasks:
     - name: SSH keyscan
       import_role:
@@ -51,12 +52,94 @@
       tags:
         - buffer
 
-    # msggen
-    - name: Copy msggen executable
-      copy: src={{msggen_path}} dest=/home/ubuntu/msggen
+    # Ephemeral storage
+    - name: Create filesystem
+      block:
+        - name: Create filesystem
+          filesystem:
+            fstype: ext4
+            dev: /dev/nvme0n1
+          become: yes
+
+        - name: Mount filesystem
+          mount:
+            path: /home/ubuntu/lto
+            state: mounted
+            src: /dev/nvme0n1
+            fstype: ext4
+          become: yes
+
+        - name: Permissions
+          file:
+            path: /home/ubuntu/lto
+            state: directory
+            recurse: yes
+            owner: ubuntu
+            group: ubuntu
+          become: yes
+      rescue:
+        - name: Create filesystem
+          filesystem:
+            fstype: ext4
+            dev: /dev/nvme1n1
+          become: yes
+
+        - name: Mount filesystem
+          mount:
+            path: /home/ubuntu/lto
+            state: mounted
+            src: /dev/nvme1n1
+            fstype: ext4
+          become: yes
+
+        - name: Permissions
+          file:
+            path: /home/ubuntu/lto
+            state: directory
+            recurse: yes
+            owner: ubuntu
+            group: ubuntu
+          become: yes
+      tags:
+        - ssd
+
+    # bridge
+    - name: Copy bridge executable
+      copy: src={{bridge_path}} dest=/home/ubuntu/bridge
               owner=ubuntu group=ubuntu mode=0744
       tags:
-        - msggen
+        - bridge
+
+    # Java
+    - name: Install jre
+      apt:
+        name: openjdk-11-jre
+        update_cache: yes
+      become: yes
+      tags:
+        - java
+
+    # Copy chaindata
+    - name: Copy chaindata
+      shell: gsutil cp gs://marlin-chaindata/lto.tar.gz - | tar -xzf - -C /home/ubuntu/lto --strip-components 2
+      become: yes
+      tags:
+        - never
+        - chaindata
+
+    # chain
+    - name: Copy chain executable
+      copy: src={{lto_path}} dest=/home/ubuntu/chain.jar
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - chain
+
+    # # keylist
+    # - name: Copy keylist executable
+    #   copy: src={{keylist_path}} dest=/home/ubuntu/keylist.json
+    #           owner=ubuntu group=ubuntu mode=0777
+    #   tags:
+    #     - keylist
 
     # Node exporter
     # - name: Copy node exporter executable
@@ -69,6 +152,8 @@
         name: supervisor
         update_cache: yes
       become: yes
+      tags:
+        - supervisor
 
     - name: msggen config file
       copy: src=./msggen.conf dest=/etc/supervisor/conf.d/msggen.conf
@@ -88,17 +173,25 @@
       tags:
         - config
 
-    - name: Restart msggen
+    - name: Restart bridge
       supervisorctl:
-        name: msggen
+        name: bridge
         state: restarted
       become: yes
       tags:
-        - msggen
+        - bridge
 
-    - name: Stop msggen
+    - name: Restart chain
       supervisorctl:
-        name: msggen
+        name: chain
+        state: restarted
+      become: yes
+      tags:
+        - chain
+
+    - name: Stop chain
+      supervisorctl:
+        name: chain
         state: stopped
       become: yes
       tags:
@@ -123,10 +216,18 @@
       tags:
         - filebeat
 
+    # - name: Lock release
+    #   shell: mv /var/cache/apt/archives/lock /var/cache/apt/archives/lock.bak
+    #   become: yes
+    #   tags:
+    #     - never
+    #     - lockrel
+
     - name: Install filebeat
       apt:
         name: filebeat
-        update_cache: yes
+        # update_cache: yes
+        # force_apt_get: yes
       become: yes
       tags:
         - filebeat

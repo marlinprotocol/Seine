@@ -118,6 +118,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
                 ...args.labels,
                 "role": "monitoring",
             },
+            diskSize: 50,
         });
 
         this.monitoringIps = Object.values(this.monitoringInstances.instances).map((i) => {

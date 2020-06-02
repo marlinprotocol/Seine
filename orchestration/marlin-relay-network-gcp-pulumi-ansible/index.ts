@@ -92,10 +92,11 @@ let msggenInstances = new GCPInstances(`${labels["project"]}-msggens`, {
     subnets: Object.keys(subnets).reduce((o, key) => {
         return {
             ...o,
-            [key]: {subnet: relayNetwork.network.subnets[key], count: 8},
+            [key]: {subnet: relayNetwork.network.subnets[key], count: 4},
         };
     }, {}),
-    instanceType: "g1-small",
+    instanceType: "n1-standard-1",
+    localssd: true,
     networkTags: ["msggen"],
     labels: {
         ...labels,

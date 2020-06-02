@@ -6,6 +6,7 @@ interface GCPInstancesArgs {
     instanceType: string;
     preemptible?: boolean;
     localssd?: boolean;
+    diskSize?: number;
     networkTags?: pulumi.Input<pulumi.Input<string>[]>;
     labels?: pulumi.Input<{[key: string]: any}>;
 }
@@ -30,6 +31,7 @@ export class GCPInstances extends pulumi.ComponentResource {
                             initializeParams: {
                                 image: "ubuntu-1910",
                                 labels: args.labels,
+                                size: args.diskSize,
                             }
                         },
                         labels: args.labels,

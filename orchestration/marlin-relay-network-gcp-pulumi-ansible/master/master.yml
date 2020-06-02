@@ -4,6 +4,7 @@
   strategy: free
   vars:
     role: master
+    monitoring_ip: "{{ hostvars[groups['gcp_role_monitoring'][0]].ansible_default_ipv4.address }}"
   tasks:
     - name: SSH keyscan
       import_role:
