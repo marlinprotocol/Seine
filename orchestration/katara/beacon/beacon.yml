@@ -27,6 +27,14 @@
       tags:
         - ntp
 
+    # Supervisor
+    - name: Supervisor install
+      import_role:
+        name: supervisor
+        tasks_from: install
+      tags:
+        - supervisor
+
     # Beacon
     - name: Copy beacon executable
       copy: src={{beacon_path}} dest=/home/ubuntu/beacon
@@ -34,29 +42,12 @@
       tags:
         - beacon
 
-    # Supervisor
-    - name: Install supervisor
-      apt:
+    - name: Beacon config
+      import_role:
         name: supervisor
-        update_cache: yes
-      become: yes
-
-    - name: Beacon config file
-      copy: src=./beacon.conf dest=/etc/supervisor/conf.d/beacon.conf
-              owner=ubuntu group=ubuntu mode=0644
-      become: yes
-
-    - name: Reload supervisor config
-      supervisorctl:
-        name: beacon
-        state: present
-      become: yes
-
-    - name: Restart beacon
-      supervisorctl:
-        name: beacon
-        state: restarted
-      become: yes
+        tasks_from: config
+      vars:
+        process_name: beacon
       tags:
         - beacon
 
