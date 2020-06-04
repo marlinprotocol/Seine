@@ -11,6 +11,33 @@
 ## Setup instructions
 
 The repo has a lot of legacy scripts. Current ones are in the provisioning, deployment and orchestration folders.
-1. Navigate to orchestration/katara
+1. Navigate to orchestration/katara.
 2. Provision instances using `pulumi up`. Can change numbers/regions/config in `index.ts`.
-3. Deploy the various node types using ansible playbooks (will add instructions)
+3. Configure ansible inventory. An example is given in `inv.gcp.yml.example` to automatically configure inventory form running iknstances on GCP. It needs an env var `GCP_SERVICE_ACCOUNT_FILE` pointing to a service account file path.
+4. Configure ansible variables needed for various playbooks. An example is given in `ansiblevars.yml.example`.
+5. Key scan instances to mark them as known hosts.
+```
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" monitoring/monitoring.yml --tags=keyscan
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" beacon/beacon.yml --tags=keyscan
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" master/master.yml --tags=keyscan
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" relay/relay.yml --tags=keyscan
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" msggen/msggen.yml --tags=keyscan
+```
+6. Gather monitoring and beacon IPs which are used in other playbooks.
+```
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" monitoring/monitoring.yml --tags=gather
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" beacon/beacon.yml --tags=gather
+```
+7. Deploy the various nodes
+```
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" monitoring/monitoring.yml
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" beacon/beacon.yml
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" master/master.yml
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" relay/relay.yml
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" msggen/msggen.yml
+```
+
+Note that msggen.yml has a task tagged with `chaindata` which downloads chaindata from an existing GCS bucket to save sync time. It can be run (while geth isn't running) using
+```
+ansible-playbook -i inv.gcp.yml -e "@ansiblevars.yml" msggen/msggen.yml --tags=chaindata
+```
