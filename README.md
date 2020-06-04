@@ -8,6 +8,8 @@
 - Bridge - Acts as a gateway between Eth network and our propagation network. Needs to be added as a peer to the Eth full node.
 - Eth - Eth full node which is the only publicly exposed component, prevents spam
 
+Bridge and Eth are usually deployed in a single instance.
+
 ## Setup instructions
 
 The repo has a lot of legacy scripts. Current ones are in the provisioning, deployment and orchestration folders.
