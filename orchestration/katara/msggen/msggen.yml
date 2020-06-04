@@ -1,10 +1,11 @@
-- hosts: gcp_role_msggen
+- hosts: gcp_role_eth
   remote_user: ubuntu
   gather_facts: no
   strategy: free
   vars:
-    role: msggen
+    role: eth
     monitoring_ip: "{{ hostvars[groups['gcp_role_monitoring'][0]].ansible_default_ipv4.address }}"
+    beacon_ip: "{{ hostvars[groups['gcp_role_beacon'][0]].ansible_default_ipv4.address }}"
   tasks:
     - name: SSH keyscan
       import_role:
@@ -22,86 +23,30 @@
         - ntp
 
     # Buffer sizes
-    - name: Set udp memory
-      shell: sudo echo -e "26214400\t26214400\t26214400" > /proc/sys/net/ipv4/udp_mem
-      become: yes
-      tags:
-        - buffer
-
-    - name: Set read memory max
-      shell: sysctl -w net.core.rmem_max=26214400
-      become: yes
-      tags:
-        - buffer
-
-    - name: Set write memory max
-      shell: sysctl -w net.core.wmem_max=26214400
-      become: yes
-      tags:
-        - buffer
-
-    - name: Set read memory default
-      shell: sysctl -w net.core.rmem_default=26214400
-      become: yes
-      tags:
-        - buffer
-
-    - name: Set write memory default
-      shell: sysctl -w net.core.wmem_default=26214400
-      become: yes
+    - name: Buffer sizes
+      import_role:
+        name: netbuffer
+        tasks_from: main
       tags:
         - buffer
 
     # Ephemeral storage
-    - name: Create filesystem
-      block:
-        - name: Create filesystem
-          filesystem:
-            fstype: ext4
-            dev: /dev/nvme0n1
-          become: yes
-
-        - name: Mount filesystem
-          mount:
-            path: /home/ubuntu/lto
-            state: mounted
-            src: /dev/nvme0n1
-            fstype: ext4
-          become: yes
-
-        - name: Permissions
-          file:
-            path: /home/ubuntu/lto
-            state: directory
-            recurse: yes
-            owner: ubuntu
-            group: ubuntu
-          become: yes
-      rescue:
-        - name: Create filesystem
-          filesystem:
-            fstype: ext4
-            dev: /dev/nvme1n1
-          become: yes
-
-        - name: Mount filesystem
-          mount:
-            path: /home/ubuntu/lto
-            state: mounted
-            src: /dev/nvme1n1
-            fstype: ext4
-          become: yes
-
-        - name: Permissions
-          file:
-            path: /home/ubuntu/lto
-            state: directory
-            recurse: yes
-            owner: ubuntu
-            group: ubuntu
-          become: yes
+    - name: Mount local ssd
+      import_role:
+        name: localssd
+        tasks_from: main
+      vars:
+        mount_point: /home/ubuntu/eth_data
       tags:
         - ssd
+
+    # Supervisor
+    - name: Supervisor install
+      import_role:
+        name: supervisor
+        tasks_from: install
+      tags:
+        - supervisor
 
     # bridge
     - name: Copy bridge executable
@@ -110,18 +55,24 @@
       tags:
         - bridge
 
-    # Java
-    - name: Install jre
-      apt:
-        name: openjdk-11-jre
-        update_cache: yes
-      become: yes
+    - name: Copy bridge key
+      copy: src=./pkey.ec.der dest=/home/ubuntu/pkey.ec.der
+              owner=ubuntu group=ubuntu mode=0777
       tags:
-        - java
+        - bridge
+
+    - name: bridge config
+      import_role:
+        name: supervisor
+        tasks_from: config
+      vars:
+        process_name: bridge
+      tags:
+        - bridge
 
     # Copy chaindata
     - name: Copy chaindata
-      shell: gsutil cp gs://marlin-chaindata/lto.tar.gz - | tar -xzf - -C /home/ubuntu/lto --strip-components 2
+      shell: mkdir -p /home/ubuntu/eth_data/geth && gsutil cp gs://marlin-chaindata-iowa/eth.tar - | tar -xf - -C /home/ubuntu/eth_data/geth/
       become: yes
       tags:
         - never
@@ -129,22 +80,25 @@
 
     # chain
     - name: Copy chain executable
-      copy: src={{lto_path}} dest=/home/ubuntu/chain.jar
+      copy: src={{chain_path}} dest=/home/ubuntu/chain
               owner=ubuntu group=ubuntu mode=0744
       tags:
         - chain
 
-    # # keylist
-    # - name: Copy keylist executable
-    #   copy: src={{keylist_path}} dest=/home/ubuntu/keylist.json
-    #           owner=ubuntu group=ubuntu mode=0777
-    #   tags:
-    #     - keylist
+    - name: Add bridge as static peer
+      copy: src=./static-nodes.json dest=/home/ubuntu/eth_data/static-nodes.json
+              owner=ubuntu group=ubuntu mode=0777
+      tags:
+        - chain
 
-    # Node exporter
-    # - name: Copy node exporter executable
-    #   copy: src={{node_exporter_path}} dest=/home/ubuntu/node_exporter
-    #           owner=ubuntu group=ubuntu mode=0744
+    - name: chain config
+      import_role:
+        name: supervisor
+        tasks_from: config
+      vars:
+        process_name: chain
+      tags:
+        - chain
 
     # Supervisor
     - name: Install supervisor
@@ -155,39 +109,18 @@
       tags:
         - supervisor
 
-    - name: msggen config file
-      copy: src=./msggen.conf dest=/etc/supervisor/conf.d/msggen.conf
+    - name: eth config file
+      copy: src=./eth.conf dest=/etc/supervisor/conf.d/eth.conf
               owner=ubuntu group=ubuntu mode=0644
       become: yes
       tags:
         - config
-
-    # - name: Node exporter config file
-    #   copy: src=./node_exporter.conf dest=/etc/supervisor/conf.d/node_exporter.conf
-    #           owner=ubuntu group=ubuntu mode=0644
-    #   become: yes
 
     - name: Reload supervisor config
       command: supervisorctl reload
       become: yes
       tags:
         - config
-
-    - name: Restart bridge
-      supervisorctl:
-        name: bridge
-        state: restarted
-      become: yes
-      tags:
-        - bridge
-
-    - name: Restart chain
-      supervisorctl:
-        name: chain
-        state: restarted
-      become: yes
-      tags:
-        - chain
 
     - name: Stop chain
       supervisorctl:
@@ -250,7 +183,7 @@
         - filebeat
 
     - name: Nuke logs
-      shell: rm -rf /var/log/supervisor/msggen*
+      shell: rm -rf /var/log/supervisor/bridge*
       become: yes
       tags:
         - never
