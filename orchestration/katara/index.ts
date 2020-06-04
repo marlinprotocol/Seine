@@ -63,6 +63,20 @@ let relayNetwork = new GCPRelayNetwork(`${labels["project"]}`, {
         };
     }, {}),
     labels: labels,
+    firewalls: {
+        "eth": {
+            direction: "INGRESS",
+            allows: [{
+                protocol: "tcp",
+                ports: ["30303-30303"],
+            }, {
+                protocol: "udp",
+                ports: ["30303-30303"],
+            }],
+            sourceRanges: ["0.0.0.0/0"],
+            targetTags: ["eth"],
+        },
+    }
 });
 
 let masterInstances = new GCPInstances(`${labels["project"]}-masters`, {
@@ -92,10 +106,10 @@ let ethInstances = new GCPInstances(`${labels["project"]}-eths`, {
     subnets: Object.keys(subnets).reduce((o, key) => {
         return {
             ...o,
-            [key]: {subnet: relayNetwork.network.subnets[key], count: 0},
+            [key]: {subnet: relayNetwork.network.subnets[key], count: 1},
         };
     }, {}),
-    instanceType: "n1-standard-1",
+    instanceType: "n2-standard-2",
     localssd: true,
     networkTags: ["eth"],
     labels: {
