@@ -28,7 +28,7 @@ export class GCPInstances extends pulumi.ComponentResource {
                         allowStoppingForUpdate: false,
                         bootDisk: {
                             initializeParams: {
-                                image: "ubuntu-1804-lts",
+                                image: "ubuntu-2004-lts",
                                 labels: args.labels,
                             }
                         },
