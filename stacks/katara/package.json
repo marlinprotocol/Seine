@@ -4,7 +4,9 @@
         "@types/node": "^8.0.0"
     },
     "dependencies": {
-        "@pulumi/pulumi": "^2.3.0",
-        "@pulumi/gcp": "^2.0.0"
+        "@pulumi/pulumi": "^2.5.0",
+        "@pulumi/gcp": "^3.12.0",
+        "@marlinprotocol/katara-gcp-pulumi": "^0.0.1",
+        "@marlinprotocol/pulumi-gcp-instances": "^0.0.2"
     }
 }

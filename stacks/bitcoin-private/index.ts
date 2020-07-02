@@ -1,8 +1,8 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
-import { GCPRelayNetwork } from "@marlinlabs/marlin-relay-network-gcp-pulumi"
-import { GCPInstances } from "@marlinlabs/pulumi-gcp-instances"
+import { GCPRelayNetwork } from "@marlinprotocol/marlin-relay-network-gcp-pulumi"
+import { GCPInstances } from "@marlinprotocol/pulumi-gcp-instances"
 
 let labels = {
     "project": "bitcoin-private",

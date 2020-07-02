@@ -1,10 +1,13 @@
 {
-    "name": "@marlinlabs/katara-gcp-pulumi",
+    "name": "@marlinprotocol/katara-gcp-pulumi",
+    "version": "0.0.1",
     "devDependencies": {
         "@types/node": "^8.0.0"
     },
     "dependencies": {
-        "@pulumi/pulumi": "^1.0.0",
-        "@pulumi/gcp": "^1.0.0"
+        "@pulumi/pulumi": "^2.5.0",
+        "@pulumi/gcp": "^3.12.0",
+        "@marlinprotocol/pulumi-gcp-global-network": "^0.0.1",
+        "@marlinprotocol/pulumi-gcp-instances": "^0.0.2"
     }
 }

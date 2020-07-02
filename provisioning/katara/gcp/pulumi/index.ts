@@ -1,8 +1,8 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
-import { GCPGlobalNetwork } from "@marlinlabs/pulumi-gcp-global-network"
-import { GCPInstances } from "@marlinlabs/pulumi-gcp-instances"
+import { GCPGlobalNetwork } from "@marlinprotocol/pulumi-gcp-global-network"
+import { GCPInstances } from "@marlinprotocol/pulumi-gcp-instances"
 
 
 interface GCPRelayNetworkArgs {

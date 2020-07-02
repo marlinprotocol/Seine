@@ -1,7 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
-import { GCPGlobalNetwork } from "@marlinlabs/pulumi-gcp-global-network"
+import { GCPGlobalNetwork } from "@marlinprotocol/pulumi-gcp-global-network"
 import { GCPInstances } from "./instances"
 
 let labels = {
