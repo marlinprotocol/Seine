@@ -1,0 +1,12 @@
+- hosts: gcp_role_beacon
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: beacon
+    monitoring_ip: "{{ hostvars[groups['gcp_role_monitoring'][0]].ansible_default_ipv4.address }}"
+  tasks:
+    - name: Beacon
+      import_role:
+        name: beacon
+        tasks_from: main

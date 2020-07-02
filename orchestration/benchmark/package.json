@@ -1,0 +1,11 @@
+{
+    "name": "@marlinlabs/benchmark",
+    "devDependencies": {
+        "@types/node": "^8.0.0"
+    },
+    "dependencies": {
+        "@elastic/elasticsearch": "^7.8.0",
+        "@pulumi/gcp": "^2.13.0",
+        "@pulumi/pulumi": "^2.4.0"
+    }
+}

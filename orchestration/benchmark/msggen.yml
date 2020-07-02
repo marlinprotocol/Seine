@@ -1,0 +1,13 @@
+- hosts: gcp_role_msggen
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: msggen
+    monitoring_ip: "{{ hostvars[groups['gcp_role_monitoring'][0]].ansible_default_ipv4.address }}"
+    beacon_ip: "{{ hostvars[groups['gcp_role_beacon'][0]].ansible_default_ipv4.address }}"
+  tasks:
+    - name: msggen
+      import_role:
+        name: msggen
+        tasks_from: main
