@@ -66,7 +66,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
                     [key]: {subnet: this.network.subnets[key], count: args.beaconSubnets[key].count},
                 };
             }, {}),
-            instanceType: "g1-small",
+            instanceType: "e2-micro",
             networkTags: ["beacon"],
             labels: {
                 ...args.labels,
@@ -89,7 +89,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
                     [key]: {subnet: this.network.subnets[key], count: args.relaySubnets[key].count},
                 };
             }, {}),
-            instanceType: "n1-standard-1",
+            instanceType: "e2-medium",
             networkTags: ["relay"],
             labels: {
                 ...args.labels,
@@ -112,7 +112,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
                     [key]: {subnet: this.network.subnets[key], count: args.monitoringSubnets[key].count},
                 };
             }, {}),
-            instanceType: "n1-standard-1",
+            instanceType: "e2-standard-2",
             networkTags: ["monitoring"],
             labels: {
                 ...args.labels,
