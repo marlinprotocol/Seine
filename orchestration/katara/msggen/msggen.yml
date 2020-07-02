@@ -72,7 +72,14 @@
 
     # Copy chaindata
     - name: Copy chaindata
-      shell: mkdir -p /home/ubuntu/eth_data/geth && gsutil cp gs://marlin-chaindata-iowa/eth.tar - | tar -xf - -C /home/ubuntu/eth_data/geth/
+      shell: mkdir -p /home/ubuntu/eth_data/geth && gsutil cp gs://marlin-chaindata-us/eth/rinkeby.tar - | tar -xf - -C /home/ubuntu/eth_data/geth/
+      become: yes
+      tags:
+        - never
+        - chaindata
+
+    - name: Chaindata permissions
+      shell: chown -R ubuntu:ubuntu /home/ubuntu/eth_data && chmod -R 777 /home/ubuntu/eth_data
       become: yes
       tags:
         - never
@@ -99,28 +106,6 @@
         process_name: chain
       tags:
         - chain
-
-    # Supervisor
-    - name: Install supervisor
-      apt:
-        name: supervisor
-        update_cache: yes
-      become: yes
-      tags:
-        - supervisor
-
-    - name: eth config file
-      copy: src=./eth.conf dest=/etc/supervisor/conf.d/eth.conf
-              owner=ubuntu group=ubuntu mode=0644
-      become: yes
-      tags:
-        - config
-
-    - name: Reload supervisor config
-      command: supervisorctl reload
-      become: yes
-      tags:
-        - config
 
     - name: Stop chain
       supervisorctl:

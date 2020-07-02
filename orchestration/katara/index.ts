@@ -10,7 +10,7 @@ let labels = {
 };
 
 let regions: string[] = [
-    "asia-east2",
+    "asia-east1",
     "asia-northeast1",
     "asia-south1",
     "asia-southeast1",
@@ -36,10 +36,10 @@ regions.map((region, idx) => {
     }
 });
 
-delete subnets["asia-east2"];
-delete subnets["asia-northeast1"];
+// delete subnets["asia-east1"];
+// delete subnets["asia-northeast1"];
 delete subnets["asia-south1"];
-delete subnets["asia-southeast1"];
+// delete subnets["asia-southeast1"];
 delete subnets["australia-southeast1"];
 delete subnets["europe-north1"];
 delete subnets["europe-west2"];
@@ -49,7 +49,7 @@ delete subnets["northamerica-northeast1"];
 delete subnets["southamerica-east1"];
 delete subnets["us-central1"];
 delete subnets["us-east1"];
-delete subnets["us-east4"];
+// delete subnets["us-east4"];
 // delete subnets["us-west1"];
 delete subnets["us-west2"];
 
@@ -59,7 +59,7 @@ let relayNetwork = new GCPRelayNetwork(`${labels["project"]}`, {
     relaySubnets: Object.keys(subnets).reduce((o, key) => {
         return {
             ...o,
-            [key]: {...subnets[key], count: 1},
+            [key]: {...subnets[key], count: 0},
         };
     }, {}),
     labels: labels,
@@ -86,7 +86,7 @@ let masterInstances = new GCPInstances(`${labels["project"]}-masters`, {
             [key]: {subnet: relayNetwork.network.subnets[key], count: 1},
         };
     }, {}),
-    instanceType: "n1-standard-1",
+    instanceType: "e2-medium",
     networkTags: ["master"],
     labels: {
         ...labels,
@@ -109,8 +109,8 @@ let ethInstances = new GCPInstances(`${labels["project"]}-eths`, {
             [key]: {subnet: relayNetwork.network.subnets[key], count: 1},
         };
     }, {}),
-    instanceType: "n2-standard-2",
-    localssd: true,
+    instanceType: "e2-standard-2",
+    diskSize: 60,
     networkTags: ["eth"],
     labels: {
         ...labels,
