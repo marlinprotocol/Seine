@@ -1,4 +1,6 @@
-# Network management
+# Seine
+
+Deployment scripts for OpenWeaver.
 
 ## General architecture
 6 node types:
