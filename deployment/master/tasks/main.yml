@@ -76,3 +76,12 @@
   tags:
     - never
     - lognuke
+
+- name: Stop master
+  supervisorctl:
+    name: master
+    state: stopped
+  become: yes
+  tags:
+    - never
+    - stop
