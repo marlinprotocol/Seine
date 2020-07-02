@@ -1,0 +1,7 @@
+[program:msggen]
+user=ubuntu
+directory=/home/ubuntu
+command=/home/ubuntu/msggen "{{beacon_ip}}:8002"
+priority=100
+autostart=true
+autorestart=true

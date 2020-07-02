@@ -1,0 +1,85 @@
+- name: SSH keyscan
+  import_role:
+    name: sshkeyscan
+    tasks_from: sshkeyscan
+  tags:
+    - never
+    - keyscan
+
+- name: NTP
+  import_role:
+    name: ntp
+    tasks_from: chrony
+  tags:
+    - ntp
+
+# Buffer sizes
+- name: Buffer sizes
+  import_role:
+    name: netbuffer
+    tasks_from: main
+  tags:
+    - buffer
+
+# Supervisor
+- name: Supervisor install
+  import_role:
+    name: supervisor
+    tasks_from: install
+  tags:
+    - supervisor
+
+# msggen
+- name: Copy msggen executable
+  copy: src={{msggen_path}} dest=/home/ubuntu/msggen
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - msggen
+
+- name: msggen config
+  import_role:
+    name: supervisor
+    tasks_from: config
+  vars:
+    process_name: msggen
+  tags:
+    - msggen
+
+# Filebeat
+- name: Filebeat install
+  import_role:
+    name: filebeat
+    tasks_from: install
+  tags:
+    - filebeat
+
+- name: Filebeat config
+  template:
+    src: ./filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: 0744
+  become: yes
+  tags:
+    - filebeat
+
+- name: Start filebeat
+  shell: service filebeat restart
+  become: yes
+  tags:
+    - filebeat
+
+- name: Nuke logs
+  shell: rm -rf /var/log/supervisor/msggen*
+  become: yes
+  tags:
+    - never
+    - lognuke
+
+- name: Stop msggen
+  shell: supervisorctl stop msggen
+  become: yes
+  tags:
+    - never
+    - msgstop
