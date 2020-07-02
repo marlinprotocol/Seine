@@ -12,8 +12,8 @@ Bridge and Eth are usually deployed in a single instance.
 
 ## Setup instructions
 
-The repo has a lot of legacy scripts. Current ones are in the provisioning, deployment and orchestration folders.
-1. Navigate to orchestration/katara.
+The repo has a lot of legacy scripts. Current ones are in the provisioning, deployment and stacks folders.
+1. Navigate to stacks/katara.
 2. Provision instances using `pulumi up`. Can change numbers/regions/config in `index.ts`.
 3. Configure ansible inventory. An example is given in `inv.gcp.yml.example` to automatically configure inventory from running instances on GCP. It needs an env var `GCP_SERVICE_ACCOUNT_FILE` pointing to a service account file path (Ref: https://docs.ansible.com/ansible/latest/scenario_guides/guide_gce.html).
 4. Configure ansible variables needed for various playbooks. An example is given in `ansiblevars.yml.example`.
