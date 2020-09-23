@@ -29,6 +29,41 @@
   tags:
     - supervisor
 
+# chain
+- name: Copy chain executable
+  copy: src={{chain_path}} dest=/home/ubuntu/chain
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - chain
+
+- name: Copy chain genesis
+  copy: src={{chain_genesis_path}} dest=/home/ubuntu/genesis.json
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - chainreset
+    - never
+
+- name: Init chain
+  shell: sudo rm -rf /home/ubuntu/chaindata && /home/ubuntu/chain --datadir /home/ubuntu/chaindata init /home/ubuntu/genesis.json
+  tags:
+    - chainreset
+    - never
+
+- name: Copy chain config
+  copy: src={{chain_config_path}} dest=/home/ubuntu/chain.config
+          owner=ubuntu group=ubuntu mode=0744
+  tags:
+    - chain
+
+- name: chain config
+  import_role:
+    name: supervisor
+    tasks_from: config
+  vars:
+    process_name: chain
+  tags:
+    - chain
+
 # relay
 - name: Copy relay executable
   copy: src={{relay_path}} dest=/home/ubuntu/relay

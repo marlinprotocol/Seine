@@ -1,0 +1,8 @@
+[program:chain]
+user=ubuntu
+directory=/home/ubuntu
+command=/home/ubuntu/chain --datadir /home/ubuntu/chaindata --config /home/ubuntu/chain.config
+priority=100
+autostart=true
+autorestart=true
+stopwaitsecs=60
