@@ -1,0 +1,14 @@
+- name: Copy ndjson
+  block:
+    - name: File
+      copy: src={{ndjson_path}} dest=/home/ubuntu/{{ndjson_path}}
+            owner=ubuntu group=ubuntu mode=0644
+      become: yes
+  rescue:
+    - name: Template
+      template: src={{ndjson_path}}.j2 dest=/home/ubuntu/{{ndjson_path}}
+                owner=ubuntu group=ubuntu mode=0644
+      become: yes
+
+- name: Import
+  shell: 'curl -X POST "{{monitoring_ip}}:5600/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@/home/ubuntu/{{ndjson_path}}'
