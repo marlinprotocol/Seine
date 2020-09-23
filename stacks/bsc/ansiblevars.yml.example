@@ -1,0 +1,7 @@
+beacon_path: "path/to/beacon"
+relay_path: "path/to/relay"
+master_path: "path/to/master"
+htpasswd_path: "path/to/htpasswd/file/for/monitoring/server"
+monitoring_hostname: "monitoring.some.domain"
+bridge_path: "path/to/bridge"
+chain_path: "path/to/geth"
