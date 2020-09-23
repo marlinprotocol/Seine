@@ -1,0 +1,6 @@
+- name: Import objects
+  import_role:
+    name: kibana
+    tasks_from: import
+  tags:
+    - kibana
