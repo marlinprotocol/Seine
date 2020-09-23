@@ -3,6 +3,7 @@ filebeat.inputs:
   enabled: true
   paths:
     - /var/log/supervisor/bridge-stdout-*
+    - /var/log/supervisor/chain-stderr-*
     - /var/log/supervisor/supervisord.log
 
 output.logstash:

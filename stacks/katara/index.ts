@@ -42,7 +42,7 @@ delete subnets["asia-south1"];
 // delete subnets["asia-southeast1"];
 delete subnets["australia-southeast1"];
 delete subnets["europe-north1"];
-delete subnets["europe-west2"];
+// delete subnets["europe-west2"];
 delete subnets["europe-west3"];
 delete subnets["europe-west6"];
 delete subnets["northamerica-northeast1"];
@@ -83,7 +83,7 @@ let masterInstances = new GCPInstances(`${labels["project"]}-masters`, {
     subnets: Object.keys(subnets).reduce((o, key) => {
         return {
             ...o,
-            [key]: {subnet: relayNetwork.network.subnets[key], count: 1},
+            [key]: {subnet: relayNetwork.network.subnets[key], count: 0},
         };
     }, {}),
     instanceType: "e2-medium",
@@ -102,19 +102,35 @@ let masterIps = Object.values(masterInstances.instances).map((i) => {
     });
 });
 
-let ethInstances = new GCPInstances(`${labels["project"]}-eths`, {
+let ethInstances = new GCPInstances(`${labels["project"]}-gossips`, {
     subnets: Object.keys(subnets).reduce((o, key) => {
         return {
             ...o,
-            [key]: {subnet: relayNetwork.network.subnets[key], count: 1},
+            [key]: {subnet: relayNetwork.network.subnets[key], count: 0},
         };
     }, {}),
-    instanceType: "e2-standard-2",
-    diskSize: 60,
+    instanceType: "n2-standard-2",
+    localssd: true,
     networkTags: ["eth"],
     labels: {
         ...labels,
-        "role": "eth",
+        "role": "gossip",
+    },
+});
+
+let botInstances = new GCPInstances(`${labels["project"]}-weavers`, {
+    subnets: Object.keys(subnets).reduce((o, key) => {
+        return {
+            ...o,
+            [key]: {subnet: relayNetwork.network.subnets[key], count: 0},
+        };
+    }, {}),
+    instanceType: "n2-standard-2",
+    localssd: true,
+    networkTags: ["eth"],
+    labels: {
+        ...labels,
+        "role": "weaver",
     },
 });
 

@@ -1,4 +1,6 @@
-- hosts: gcp_role_eth
+- hosts: gcp_role_gossip:gcp_role_weaver
+# - hosts: gcp_role_gossip
+# - hosts: gcp_role_weaver
   remote_user: ubuntu
   gather_facts: no
   strategy: free
@@ -69,6 +71,54 @@
         process_name: bridge
       tags:
         - bridge
+
+    # bot
+    - name: Copy bot executable
+      copy: src={{bot_path}} dest=/home/ubuntu/bot
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - bot
+
+    - name: bot config
+      import_role:
+        name: supervisor
+        tasks_from: config
+      vars:
+        process_name: bot
+      tags:
+        - bot
+
+    # infura
+    - name: Copy infura executable
+      copy: src={{infura_path}} dest=/home/ubuntu/infura
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - infura
+
+    - name: infura config
+      import_role:
+        name: supervisor
+        tasks_from: config
+      vars:
+        process_name: infura
+      tags:
+        - infura
+
+    # gossip
+    - name: Copy gossip executable
+      copy: src={{gossip_path}} dest=/home/ubuntu/gossip
+              owner=ubuntu group=ubuntu mode=0744
+      tags:
+        - gossip
+
+    - name: gossip config
+      import_role:
+        name: supervisor
+        tasks_from: config
+      vars:
+        process_name: gossip
+      tags:
+        - gossip
 
     # Copy chaindata
     - name: Copy chaindata
@@ -173,3 +223,10 @@
       tags:
         - never
         - lognuke
+
+    - name: Nuke chain logs
+      shell: rm -rf /var/log/supervisor/chain*
+      become: yes
+      tags:
+        - never
+        - chainlognuke
