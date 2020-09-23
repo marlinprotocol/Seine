@@ -2,7 +2,3 @@
   path.config: "/etc/logstash/conf.d/beacon.conf"
 - pipeline.id: relay
   path.config: "/etc/logstash/conf.d/relay.conf"
-- pipeline.id: master
-  path.config: "/etc/logstash/conf.d/master.conf"
-- pipeline.id: msggen
-  path.config: "/etc/logstash/conf.d/msggen.conf"
