@@ -43,6 +43,15 @@
   tags:
     - beacon
 
+- name: Internal beacon config
+  import_role:
+    name: supervisor
+    tasks_from: config
+  vars:
+    process_name: ibeacon
+  tags:
+    - beacon
+
 # Filebeat
 - name: Filebeat install
   import_role:
