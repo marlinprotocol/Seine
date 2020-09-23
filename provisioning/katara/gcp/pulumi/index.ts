@@ -21,6 +21,7 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
     readonly relayIps: pulumi.Output<string>[];
     readonly monitoringInstances: GCPInstances;
     readonly monitoringIps: pulumi.Output<string>[];
+    readonly beaconFirewall: gcp.compute.Firewall;
 
     static readonly monitoringNetworkTag = "monitoring";
     static readonly beaconNetworkTag = "beacon";
@@ -103,6 +104,27 @@ export class GCPRelayNetwork extends pulumi.ComponentResource {
                     return i[0].networkIp;
                 });
             });
+        });
+
+        let relayPublicIps = Object.values(this.relayInstances.instances).map((i) => {
+            return i.apply((i) => {
+                return i.networkInterfaces.apply((i) => {
+                    return i[0].accessConfigs?.[0].natIp;
+                });
+            });
+        });
+
+        this.beaconFirewall = new gcp.compute.Firewall(`${name}-beaconfw`, {
+            network: this.network.network.name,
+            direction: "INGRESS",
+            allows: [{
+                protocol: "udp",
+                ports: ["8003"],
+            }],
+            sourceRanges: relayPublicIps.map((ip) => ip.apply((ip) => `${ip}/32`)),
+            targetTags: ["beacon"],
+        }, {
+            parent: this.network,
         });
 
         this.monitoringInstances = new GCPInstances(`${name}-monitorings`, {

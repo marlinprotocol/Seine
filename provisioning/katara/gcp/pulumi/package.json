@@ -1,6 +1,6 @@
 {
     "name": "@marlinprotocol/katara-gcp-pulumi",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "devDependencies": {
         "@types/node": "^8.0.0"
     },
