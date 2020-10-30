@@ -1,0 +1,183 @@
+- hosts: gcp_role_monitoring
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: monitoring
+    monitoring_hostname: kibana.marlin.pro
+    monitoring_ip: "{{ hostvars[groups['gcp_role_monitoring'][0]].ansible_default_ipv4.address }}"
+  tasks:
+    - name: SSH keyscan
+      import_role:
+        name: sshkeyscan
+        tasks_from: sshkeyscan
+      tags:
+        - never
+        - keyscan
+
+    - name: Gather facts
+      setup:
+      tags:
+        - never
+        - gather
+
+    - name: NTP
+      import_role:
+        name: ntp
+        tasks_from: chrony
+      tags:
+        - ntp
+
+    # Add apt repo
+    - name: Add ES apt key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+      become: yes
+
+    - name: Add ES apt repo
+      apt_repository:
+        repo: deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main
+        state: present
+        filename: elastic-7.x
+      become: yes
+
+    # ES
+    - name: Install ES
+      apt:
+        name: elasticsearch-oss
+        update_cache: yes
+      become: yes
+
+    - name: (Re)start ES
+      shell: service elasticsearch restart
+      become: yes
+      tags:
+        - es
+
+    # Kibana
+    - name: Install Kibana
+      apt:
+        name: kibana-oss
+        update_cache: yes
+      become: yes
+
+    - name: (Re)start Kibana
+      shell: service kibana restart
+      become: yes
+      tags:
+        - kibana
+
+    # - name: Copy Kibana objects
+    #   copy: src=./export.ndjson dest=/home/ubuntu/export.ndjson
+    #           owner=ubuntu group=ubuntu mode=0644
+    #   tags:
+    #     - import
+
+    # - name: Import Kibana objects
+    #   shell: 'curl -X POST "localhost:5601/api/saved_objects/_import" -H "kbn-xsrf: true" --form file=@export.ndjson'
+    #   become: yes
+    #   tags:
+    #     - import
+
+    # Logstash
+    - name: Install java
+      apt:
+        name: openjdk-11-jre
+        update_cache: yes
+      become: yes
+      tags:
+        - logstash
+
+    - name: Install logstash
+      apt:
+        name: logstash-oss
+        update_cache: yes
+      become: yes
+      tags:
+        - logstash
+
+    - name: Copy logstash configs
+      template: src={{item}} dest=/etc/logstash/conf.d/
+              owner=ubuntu group=ubuntu mode=0644
+      with_fileglob:
+        - ./logstash/*.conf
+      become: yes
+      tags:
+        - logstash
+
+    - name: Copy logstash pipeline
+      copy: src=./logstash/pipelines.yml dest=/etc/logstash/pipelines.yml
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - logstash
+
+    - name: (Re)start logstash
+      shell: service logstash restart
+      become: yes
+      tags:
+        - logstash
+
+    # TLS, HTTP Basic
+    - name: Install certbot
+      apt:
+        name: certbot
+        update_cache: yes
+      become: yes
+      tags:
+        - tls
+
+    - name: Get cert
+      shell: certbot -n certonly --domains {{monitoring_hostname}} --standalone --agree-tos -m roshan@marlin.pro --keep-until-expiring
+      become: yes
+      tags:
+        - tls
+
+    - name: DHParams
+      openssl_dhparam:
+        path: /home/ubuntu/dhparams.pem
+        size: 2048
+      tags:
+        - dhparams
+
+    # Nginx
+    - name: Install nginx
+      apt:
+        name: nginx
+        update_cache: yes
+      become: yes
+      tags:
+        - nginx
+
+    - name: Copy htpasswd file
+      copy: src={{htpasswd_path}} dest=/etc/nginx/.htpasswd
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - nginx
+        - htpasswd
+
+    - name: Copy nginx config
+      template: src=./kibana dest=/etc/nginx/sites-available/kibana
+              owner=ubuntu group=ubuntu mode=0644
+      become: yes
+      tags:
+        - nginx
+
+    - name: Symlink nginx config
+      file:
+        src: /etc/nginx/sites-available/kibana
+        dest: /etc/nginx/sites-enabled/kibana
+        owner: ubuntu
+        group: ubuntu
+        state: link
+      become: yes
+      tags:
+        - nginx
+
+    - name: Reload nginx
+      shell: service nginx reload
+      become: yes
+      tags:
+        - nginx

@@ -1,0 +1,20 @@
+- hosts: gcp_role_relay
+  remote_user: ubuntu
+  gather_facts: no
+  strategy: free
+  vars:
+    role: relay
+    monitoring_ip: "{{ hostvars[groups['gcp_role_monitoring'][0]].ansible_default_ipv4.address }}"
+    beacon_private_ip: "{{ hostvars[groups['gcp_role_beacon'][0]].ansible_default_ipv4.address }}"
+    beacon_public_ip: "{{ groups['gcp_role_beacon'][0] }}"
+  tasks:
+    - name: Relay
+      import_role:
+        name: relay
+        tasks_from: main
+
+    - name: Kibana
+      import_role:
+        name: relay
+        tasks_from: kibana
+      run_once: true
