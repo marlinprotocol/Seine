@@ -1,7 +1,7 @@
 [program:chain]
 user=ubuntu
 directory=/home/ubuntu
-command=/home/ubuntu/chain --datadir /home/ubuntu/chaindata --config /home/ubuntu/chain.config
+command=/home/ubuntu/chain --nousb --syncmode=light --datadir=/home/ubuntu/chaindata/ --metrics --pprof --pprof.addr "0.0.0.0"
 priority=100
 autostart=true
 autorestart=true
