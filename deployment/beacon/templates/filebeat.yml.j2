@@ -3,6 +3,7 @@ filebeat.inputs:
   enabled: true
   paths:
     - /var/log/supervisor/beacon-stdout-*
+    - /var/log/supervisor/ibeacon-stdout-*
     - /var/log/supervisor/supervisord.log
 
 output.logstash:
